@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = ["charlesrocket"]
 edition = "2021"
 categories = ["wasm"]
+license = "Apache-2.0/MIT"
+description = "Online version of Pixelmosh"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
