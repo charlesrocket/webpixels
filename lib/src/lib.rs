@@ -18,29 +18,6 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn pixelmosh(image: &[u8], options: &Options) -> Result<Vec<u8>, JsValue> {
-    let decoder = png::Decoder::new(image);
-    let mut output: Vec<u8> = Vec::new();
-    let mut reader = decoder.read_info().map_err(|error| JsValue::from(error.to_string()))?;
-    let mut buf = vec![0; reader.output_buffer_size()];
-    let info = reader.next_frame(&mut buf).map_err(|error| JsValue::from(error.to_string()))?;
-
-    mosh(&info, &mut buf, &options.0);
-
-    {
-        let mut encoder = png::Encoder::new(&mut output, info.width, info.height);
-
-        encoder.set_color(info.color_type);
-        encoder.set_depth(info.bit_depth);
-
-        let mut writer = encoder.write_header().map_err(|error| JsValue::from(error.to_string()))?;
-        writer.write_image_data(&buf).map_err(|error| JsValue::from(error.to_string()))?;
-    }
-
-    Ok(output)
-}
-
-#[wasm_bindgen]
 pub struct Options(MoshOptions);
 
 #[wasm_bindgen]
@@ -120,4 +97,27 @@ impl Options {
     pub fn set_seed(&mut self, value: u64) {
         self.0.seed = value;
     }
+}
+
+#[wasm_bindgen]
+pub fn pixelmosh(image: &[u8], options: &Options) -> Result<Vec<u8>, JsValue> {
+    let decoder = png::Decoder::new(image);
+    let mut output: Vec<u8> = Vec::new();
+    let mut reader = decoder.read_info().map_err(|error| JsValue::from(error.to_string()))?;
+    let mut buf = vec![0; reader.output_buffer_size()];
+    let info = reader.next_frame(&mut buf).map_err(|error| JsValue::from(error.to_string()))?;
+
+    mosh(&info, &mut buf, &options.0);
+
+    {
+        let mut encoder = png::Encoder::new(&mut output, info.width, info.height);
+
+        encoder.set_color(info.color_type);
+        encoder.set_depth(info.bit_depth);
+
+        let mut writer = encoder.write_header().map_err(|error| JsValue::from(error.to_string()))?;
+        writer.write_image_data(&buf).map_err(|error| JsValue::from(error.to_string()))?;
+    }
+
+    Ok(output)
 }
