@@ -106,6 +106,7 @@ pub fn pixelmosh(image: &[u8], options: &Options) -> Result<Vec<u8>, JsValue> {
     let mut reader = decoder
         .read_info()
         .map_err(|error| JsValue::from(error.to_string()))?;
+
     let mut buf = vec![0; reader.output_buffer_size()];
     let info = reader
         .next_frame(&mut buf)
@@ -122,6 +123,7 @@ pub fn pixelmosh(image: &[u8], options: &Options) -> Result<Vec<u8>, JsValue> {
         let mut writer = encoder
             .write_header()
             .map_err(|error| JsValue::from(error.to_string()))?;
+
         writer
             .write_image_data(&buf)
             .map_err(|error| JsValue::from(error.to_string()))?;
