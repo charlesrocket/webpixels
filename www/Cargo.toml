@@ -8,3 +8,9 @@ categories = ["wasm"]
 [dependencies]
 sycamore = "0.8.0-beta.7"
 webpixels = { path = "../lib" }
+
+[profile.release]
+panic = 'abort'
+codegen-units = 1
+opt-level = 's'
+lto = true
