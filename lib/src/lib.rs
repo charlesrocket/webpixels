@@ -13,6 +13,6 @@ use crate::utils::set_panic_hook;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn alert(s: &str);
 }
