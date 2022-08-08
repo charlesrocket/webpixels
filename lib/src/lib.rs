@@ -2,9 +2,7 @@ use wasm_bindgen::prelude::*;
 
 use libmosh::{mosh, Options as MoshOptions};
 
-use crate::utils::set_panic_hook;
-
-mod utils;
+pub mod utils;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
