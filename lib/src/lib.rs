@@ -31,23 +31,23 @@ impl Options {
         self.0.pixelation
     }
 
-    pub fn line_shift_rng(&self) -> f64 {
+    pub fn line_shift(&self) -> f64 {
         self.0.line_shift_rng
     }
 
-    pub fn reverse_rng(&self) -> f64 {
+    pub fn reverse(&self) -> f64 {
         self.0.reverse_rng
     }
 
-    pub fn flip_rng(&self) -> f64 {
+    pub fn flip(&self) -> f64 {
         self.0.flip_rng
     }
 
-    pub fn channel_swap_rng(&self) -> f64 {
+    pub fn channel_swap(&self) -> f64 {
         self.0.channel_swap_rng
     }
 
-    pub fn channel_shift_rng(&self) -> f64 {
+    pub fn channel_shift(&self) -> f64 {
         self.0.channel_shift_rng
     }
 
@@ -67,23 +67,23 @@ impl Options {
         self.0.pixelation = value;
     }
 
-    pub fn set_line_shift_rng(&mut self, value: f64) {
+    pub fn set_line_shift(&mut self, value: f64) {
         self.0.line_shift_rng = value;
     }
 
-    pub fn set_reverse_rng(&mut self, value: f64) {
+    pub fn set_reverse(&mut self, value: f64) {
         self.0.reverse_rng = value;
     }
 
-    pub fn set_flip_rng(&mut self, value: f64) {
+    pub fn set_flip(&mut self, value: f64) {
         self.0.flip_rng = value;
     }
 
-    pub fn set_channel_swap_rng(&mut self, value: f64) {
+    pub fn set_channel_swap(&mut self, value: f64) {
         self.0.channel_swap_rng = value;
     }
 
-    pub fn set_channel_shift_rng(&mut self, value: f64) {
+    pub fn set_channel_shift(&mut self, value: f64) {
         self.0.channel_shift_rng = value;
     }
 
