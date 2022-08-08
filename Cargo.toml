@@ -3,3 +3,7 @@ members = [
     "lib",
     "www"
 ]
+
+[profile.release.package.pixelmosh-w3]
+codegen-units = 1
+opt-level = 's'
