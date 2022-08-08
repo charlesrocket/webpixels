@@ -107,7 +107,7 @@ pub fn pixelmosh(image: &[u8], options: &Options) -> Result<Vec<u8>, JsValue> {
         .next_frame(&mut buf)
         .map_err(|error| JsValue::from(error.to_string()))?;
 
-    mosh(&info, &mut buf, &options.0);
+    mosh(&info, &mut buf, &options.0).map_err(|error| JsValue::from(error.to_string()))?;
 
     {
         let mut encoder = png::Encoder::new(&mut output, info.width, info.height);
