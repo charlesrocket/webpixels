@@ -35,7 +35,7 @@ enum Msg {
     DragOver,
     DragLeave,
     Drop(FileList),
-    FileProcess(String),
+    FileProcess(JsValue),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -60,19 +60,19 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 orders.perform_cmd(async move {
                     let text =
                         // Convert `promise` to `Future`.
-                        JsFuture::from(file.text())
-                            .await
-                            .expect("read file")
-                            .as_string()
-                            .expect("cast file text to String");
+                        JsFuture::from(file.array_buffer())
+                            .await.expect("read file").into();
                     Msg::FileProcess(text)
                 });
             }
         }
         Msg::FileProcess(mut text) => {
             let options = Options::default();
-            log!("{}", text);
-            unsafe { pixelmosh(text.as_bytes_mut(), &options).expect("Failed to pixelmosh") };
+            let mut tmp: JsValue = text;
+            let mut array = js_sys::Uint8Array::new(&tmp);
+            let mut bytes: Vec<u8> = array.to_vec();
+            //log!("{}", bytes);
+            pixelmosh(&bytes, &options).expect("Failed to pixelmosh");
         }
     }
 }
