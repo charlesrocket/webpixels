@@ -1,6 +1,6 @@
 [package]
 name = "webpixels"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["charlesrocket"]
 edition = "2021"
 categories = ["multimedia::images", "wasm"]
