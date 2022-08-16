@@ -54,13 +54,11 @@ jobs:
       - uses: swatinem/rust-cache@v1
       - name: Install Deps
         uses: actions-rs/cargo@v1
-        working-directory: ./www
         with:
           command: install
           args: cargo-make
       - name: Build
         uses: actions-rs/cargo@v1
-        working-directory: ./www
         with:
           command: make
           args: build_release
