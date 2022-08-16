@@ -13,7 +13,7 @@ jobs:
       - uses: swatinem/rust-cache@v1
       - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: wasm-pack test --headless --chrome --firefox
-        working-directory: ./www
+        working-directory: ./lib
 
   clippy:
     name: Lint
