@@ -61,7 +61,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                     let image =
                         // Convert `promise` to `Future`.
                         JsFuture::from(file.array_buffer())
-                            .await.expect("read file").into();
+                            .await.expect("read file");
                     Msg::Pixelmosh(image)
                 });
             }
