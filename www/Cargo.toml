@@ -1,12 +1,15 @@
 [package]
 name = "pixelmosh-w3"
-version = "0.1.0"
+version = "0.1.0-alpha"
 authors = ["charlesrocket"]
 edition = "2021"
 categories = ["wasm"]
 
+[lib]
+crate-type = ["cdylib"]
+
 [dependencies]
 console_log = "~0.2"
 log = "~0.4"
-sycamore = "0.8.0-beta.7"
+seed = "~0.9"
 webpixels = { path = "../lib" }
