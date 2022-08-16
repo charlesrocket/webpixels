@@ -52,7 +52,7 @@ jobs:
         with:
           toolchain: stable
       - uses: swatinem/rust-cache@v1
-      - name: Install Deps
+      - name: Install dependencies
         uses: actions-rs/cargo@v1
         with:
           command: install
@@ -61,7 +61,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: make
-          args: build_release
+          args: build --manifest-path www/Cargo.toml
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
