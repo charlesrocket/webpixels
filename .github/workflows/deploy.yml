@@ -35,10 +35,8 @@ jobs:
           command: install
           args: cargo-make
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: build --manifest-path www/Cargo.toml
+        run: cargo make build_release
+        working-directory: ./www
       - name: Setup Pages
         uses: actions/configure-pages@v1
       - name: Upload artifact
