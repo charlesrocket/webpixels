@@ -66,10 +66,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 });
             }
         }
-        Msg::Pixelmosh(mut image) => {
+        Msg::Pixelmosh(image) => {
             let options = Options::default();
-            let mut array = js_sys::Uint8Array::new(&image);
-            let mut bytes: Vec<u8> = array.to_vec();
+            let array = js_sys::Uint8Array::new(&image);
+            let bytes: Vec<u8> = array.to_vec();
             pixelmosh(&bytes, &options).expect("Pixelmosh failed");
             log!("Pixelmosh: DONE");
         }
