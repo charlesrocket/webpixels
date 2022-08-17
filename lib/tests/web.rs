@@ -12,7 +12,8 @@ wasm_bindgen_test_configure!(run_in_browser);
 #[wasm_bindgen_test]
 fn valid_image() {
     let options = Options::default();
-    pixelmosh(&files::VALID_IMAGE.to_vec(), &options).unwrap();
+    let result = pixelmosh(&files::VALID_IMAGE.to_vec(), &options);
+    assert!(!result.is_err());
 }
 
 #[wasm_bindgen_test]
