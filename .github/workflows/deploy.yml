@@ -36,7 +36,7 @@ jobs:
           command: install
           args: trunk
       - name: Build
-        run: trunk build --release
+        run: trunk build --release --public-url webpixels
         working-directory: ./www
       - name: Setup Pages
         uses: actions/configure-pages@v1
