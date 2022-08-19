@@ -146,11 +146,6 @@ fn view(model: &Model) -> Node<Msg> {
     ],]
 }
 
-// ------ ------
-//     Start
-// ------ ------
-
-#[wasm_bindgen(start)]
-pub fn start() {
-    App::start("app", init, update, view);
+pub fn main() {
+    App::start("Pixelmosh", init, update, view);
 }

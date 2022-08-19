@@ -5,9 +5,6 @@ authors = ["charlesrocket"]
 edition = "2021"
 categories = ["wasm"]
 
-[lib]
-crate-type = ["cdylib"]
-
 [dependencies]
 console_log = "~0.2"
 log = "~0.4"
