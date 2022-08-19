@@ -33,9 +33,9 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: install
-          args: cargo-make
+          args: trunk
       - name: Build
-        run: cargo make build_release
+        run: trunk build --release
         working-directory: ./www
       - name: Setup Pages
         uses: actions/configure-pages@v1
