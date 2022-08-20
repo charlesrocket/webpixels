@@ -42,9 +42,9 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 
             for file in files {
                 orders.perform_cmd(async move {
-                    let image =
-                    JsFuture::from(file.array_buffer())
-                        .await.expect("read file");
+                    let image = JsFuture::from(file.array_buffer())
+                        .await
+                        .expect("read file");
 
                     let options = Options::default();
                     let array = js_sys::Uint8Array::new(&image);
@@ -52,15 +52,16 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                     let new_array = js_sys::Uint8Array::new(
                         &unsafe {
                             js_sys::Uint8Array::view(
-                                &pixelmosh(&bytes, &options).expect("Pixelmosh failed"),
+                                &pixelmosh(&bytes, &options).expect("PIXELMOSH failed"),
                             )
                         }
                         .into(),
                     );
+
+                    log!("PIXELMOSH: DONE", file.name());
+
                     let array = js_sys::Array::new();
                     array.push(&new_array.buffer());
-
-                    log!("Pixelmosh: DONE");
 
                     let new_image = JsValue::from(array);
                     let blob = web_sys::Blob::new_with_u8_array_sequence_and_options(
