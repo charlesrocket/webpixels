@@ -7,7 +7,7 @@ use webpixels::{pixelmosh, Options};
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         drop_zone_active: false,
-        drop_zone_content: vec![div!["DROP IMAGES HERE"]],
+        drop_zone_content: vec![div!["PNG DROP ZONE"]],
         file_texts: Vec::new(),
     }
 }
@@ -106,12 +106,12 @@ fn view(model: &Model) -> Node<Msg> {
             St::Margin => "auto",
             St::Background => if model.drop_zone_active { "lightgreen" } else { "orange" },
             St::FontFamily => "monospace",
+            St::FontSize => "35px",
             St::Display => "flex",
             St::FlexDirection => "column",
             St::JustifyContent => "center",
             St::AlignItems => "center",
-            St::Border => [&px(2), "dotted", "black"].join(" ");
-            St::BorderRadius => px(43),
+            St::Border => [&px(3), "dashed", "black"].join(" ");
         ],
         ev(Ev::DragEnter, |event| {
             stop_and_prevent!(event);
