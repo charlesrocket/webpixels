@@ -4,10 +4,6 @@ use web_sys::{self, DragEvent, Event, FileList};
 
 use webpixels::{pixelmosh, Options};
 
-// ------ ------
-//     Init
-// ------ ------
-
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         drop_zone_active: false,
@@ -16,19 +12,11 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     }
 }
 
-// ------ ------
-//     Model
-// ------ ------
-
 struct Model {
     drop_zone_active: bool,
     drop_zone_content: Vec<Node<Msg>>,
     file_texts: Vec<String>,
 }
-
-// ------ ------
-//    Update
-// ------ ------
 
 enum Msg {
     DragEnter,
@@ -46,19 +34,15 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             model.drop_zone_active = false;
             model.file_texts.clear();
 
-            // Note: `FileList` doesn't implement `Iterator`.
             let files = (0..file_list.length())
                 .map(|index| file_list.get(index).expect("get file with given index"))
                 .collect::<Vec<_>>();
 
-            // Get file names.
             model.drop_zone_content = files.iter().map(|file| div![file.name()]).collect();
 
-            // Read files (async).
             for file in files {
                 orders.perform_cmd(async move {
                     let image =
-                    // Convert `promise` to `Future`.
                     JsFuture::from(file.array_buffer())
                         .await.expect("read file");
 
@@ -93,10 +77,6 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     }
 }
 
-// ------ ------
-//     View
-// ------ ------
-
 trait IntoDragEvent {
     fn into_drag_event(self) -> DragEvent;
 }
@@ -108,7 +88,6 @@ impl IntoDragEvent for Event {
     }
 }
 
-// Note: It's macro so you can use it with all events.
 macro_rules! stop_and_prevent {
     { $event:expr } => {
         {
@@ -156,7 +135,6 @@ fn view(model: &Model) -> Node<Msg> {
             }),
             div![
                 style! {
-                    // we don't want to fire `DragLeave` when we are dragging over drop-zone children
                     St::PointerEvents => "none",
                 },
                 model.drop_zone_content.clone(),
