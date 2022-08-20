@@ -13,7 +13,6 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
         drop_zone_active: false,
         drop_zone_content: vec![div!["Drop images here"]],
         file_texts: Vec::new(),
-        image_data: vec![0; 0],
     }
 }
 
@@ -25,7 +24,6 @@ struct Model {
     drop_zone_active: bool,
     drop_zone_content: Vec<Node<Msg>>,
     file_texts: Vec<String>,
-    image_data: Vec<u8>,
 }
 
 // ------ ------
@@ -165,7 +163,7 @@ fn view(model: &Model) -> Node<Msg> {
             ],
         ],
         if model.file_texts.is_empty() {
-            div!["Results"]
+            div!["TODO"]
         } else {
             pre![&model.file_texts]
         }
