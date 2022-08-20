@@ -7,7 +7,7 @@ use webpixels::{pixelmosh, Options};
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         drop_zone_active: false,
-        drop_zone_content: vec![div!["Drop images here"]],
+        drop_zone_content: vec![div!["DROP IMAGES HERE"]],
         file_texts: Vec::new(),
     }
 }
@@ -35,7 +35,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             model.file_texts.clear();
 
             let files = (0..file_list.length())
-                .map(|index| file_list.get(index).expect("get file with given index"))
+                .map(|index| file_list.get(index).unwrap())
                 .collect::<Vec<_>>();
 
             model.drop_zone_content = files.iter().map(|file| div![file.name()]).collect();
@@ -99,54 +99,47 @@ macro_rules! stop_and_prevent {
 }
 
 fn view(model: &Model) -> Node<Msg> {
-    div![
-        div![
-            style![
-                St::Height => px(200),
-                St::Width => px(200),
-                St::Margin => "auto",
-                St::Background => if model.drop_zone_active { "lightgreen" } else { "lightgray" },
-                St::FontFamily => "sans-serif",
-                St::Display => "flex",
-                St::FlexDirection => "column",
-                St::JustifyContent => "center",
-                St::AlignItems => "center",
-                St::Border => [&px(2), "dashed", "black"].join(" ");
-                St::BorderRadius => px(20),
-            ],
-            ev(Ev::DragEnter, |event| {
-                stop_and_prevent!(event);
-                Msg::DragEnter
-            }),
-            ev(Ev::DragOver, |event| {
-                let drag_event = event.into_drag_event();
-                stop_and_prevent!(drag_event);
-                drag_event.data_transfer().unwrap().set_drop_effect("copy");
-                Msg::DragOver
-            }),
-            ev(Ev::DragLeave, |event| {
-                stop_and_prevent!(event);
-                Msg::DragLeave
-            }),
-            ev(Ev::Drop, |event| {
-                let drag_event = event.into_drag_event();
-                stop_and_prevent!(drag_event);
-                let file_list = drag_event.data_transfer().unwrap().files().unwrap();
-                Msg::Drop(file_list)
-            }),
-            div![
-                style! {
-                    St::PointerEvents => "none",
-                },
-                model.drop_zone_content.clone(),
-            ],
+    div![div![
+        style![
+            St::Height => px(200),
+            St::Width => px(400),
+            St::Margin => "auto",
+            St::Background => if model.drop_zone_active { "lightgreen" } else { "orange" },
+            St::FontFamily => "monospace",
+            St::Display => "flex",
+            St::FlexDirection => "column",
+            St::JustifyContent => "center",
+            St::AlignItems => "center",
+            St::Border => [&px(2), "dotted", "black"].join(" ");
+            St::BorderRadius => px(43),
         ],
-        if model.file_texts.is_empty() {
-            div!["TODO"]
-        } else {
-            pre![&model.file_texts]
-        }
-    ]
+        ev(Ev::DragEnter, |event| {
+            stop_and_prevent!(event);
+            Msg::DragEnter
+        }),
+        ev(Ev::DragOver, |event| {
+            let drag_event = event.into_drag_event();
+            stop_and_prevent!(drag_event);
+            drag_event.data_transfer().unwrap().set_drop_effect("copy");
+            Msg::DragOver
+        }),
+        ev(Ev::DragLeave, |event| {
+            stop_and_prevent!(event);
+            Msg::DragLeave
+        }),
+        ev(Ev::Drop, |event| {
+            let drag_event = event.into_drag_event();
+            stop_and_prevent!(drag_event);
+            let file_list = drag_event.data_transfer().unwrap().files().unwrap();
+            Msg::Drop(file_list)
+        }),
+        div![
+            style! {
+                St::PointerEvents => "none",
+            },
+            model.drop_zone_content.clone(),
+        ],
+    ]]
 }
 
 pub fn main() {
