@@ -11,8 +11,9 @@ use webpixels::{pixelmosh, Options};
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         drop_zone_active: false,
-        drop_zone_content: vec![div!["Drop files here"]],
-        file_texts: vec![0; 0],
+        drop_zone_content: vec![div!["Drop images here"]],
+        file_texts: Vec::new(),
+        image_data: vec![0; 0],
     }
 }
 
@@ -23,7 +24,8 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 struct Model {
     drop_zone_active: bool,
     drop_zone_content: Vec<Node<Msg>>,
-    file_texts: Vec<u8>,
+    file_texts: Vec<String>,
+    image_data: Vec<u8>,
 }
 
 // ------ ------
@@ -35,7 +37,6 @@ enum Msg {
     DragOver,
     DragLeave,
     Drop(FileList),
-    Pixelmosh(JsValue),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -59,19 +60,37 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             for file in files {
                 orders.perform_cmd(async move {
                     let image =
-                        // Convert `promise` to `Future`.
-                        JsFuture::from(file.array_buffer())
-                            .await.expect("read file");
-                    Msg::Pixelmosh(image)
+                    // Convert `promise` to `Future`.
+                    JsFuture::from(file.array_buffer())
+                        .await.expect("read file");
+
+                    let options = Options::default();
+                    let array = js_sys::Uint8Array::new(&image);
+                    let bytes: Vec<u8> = array.to_vec();
+                    let new_array = js_sys::Uint8Array::new(
+                        &unsafe {
+                            js_sys::Uint8Array::view(
+                                &pixelmosh(&bytes, &options).expect("Pixelmosh failed"),
+                            )
+                        }
+                        .into(),
+                    );
+                    let array = js_sys::Array::new();
+                    array.push(&new_array.buffer());
+
+                    log!("Pixelmosh: DONE");
+
+                    let new_image = JsValue::from(array);
+                    let blob = web_sys::Blob::new_with_u8_array_sequence_and_options(
+                        &new_image,
+                        web_sys::BlobPropertyBag::new().type_("image/png"),
+                    )
+                    .unwrap();
+                    let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
+                    let window = web_sys::window().unwrap();
+                    window.open_with_url(&url).unwrap();
                 });
             }
-        }
-        Msg::Pixelmosh(image) => {
-            let options = Options::default();
-            let array = js_sys::Uint8Array::new(&image);
-            let bytes: Vec<u8> = array.to_vec();
-            pixelmosh(&bytes, &options).expect("Pixelmosh failed");
-            log!("Pixelmosh: DONE");
         }
     }
 }
@@ -102,48 +121,55 @@ macro_rules! stop_and_prevent {
 }
 
 fn view(model: &Model) -> Node<Msg> {
-    div![div![
-        style![
-            St::Height => px(200),
-            St::Width => px(200),
-            St::Margin => "auto",
-            St::Background => if model.drop_zone_active { "lightgreen" } else { "lightgray" },
-            St::FontFamily => "sans-serif",
-            St::Display => "flex",
-            St::FlexDirection => "column",
-            St::JustifyContent => "center",
-            St::AlignItems => "center",
-            St::Border => [&px(2), "dashed", "black"].join(" ");
-            St::BorderRadius => px(20),
-        ],
-        ev(Ev::DragEnter, |event| {
-            stop_and_prevent!(event);
-            Msg::DragEnter
-        }),
-        ev(Ev::DragOver, |event| {
-            let drag_event = event.into_drag_event();
-            stop_and_prevent!(drag_event);
-            drag_event.data_transfer().unwrap().set_drop_effect("copy");
-            Msg::DragOver
-        }),
-        ev(Ev::DragLeave, |event| {
-            stop_and_prevent!(event);
-            Msg::DragLeave
-        }),
-        ev(Ev::Drop, |event| {
-            let drag_event = event.into_drag_event();
-            stop_and_prevent!(drag_event);
-            let file_list = drag_event.data_transfer().unwrap().files().unwrap();
-            Msg::Drop(file_list)
-        }),
+    div![
         div![
-            style! {
-                // we don't want to fire `DragLeave` when we are dragging over drop-zone children
-                St::PointerEvents => "none",
-            },
-            model.drop_zone_content.clone(),
+            style![
+                St::Height => px(200),
+                St::Width => px(200),
+                St::Margin => "auto",
+                St::Background => if model.drop_zone_active { "lightgreen" } else { "lightgray" },
+                St::FontFamily => "sans-serif",
+                St::Display => "flex",
+                St::FlexDirection => "column",
+                St::JustifyContent => "center",
+                St::AlignItems => "center",
+                St::Border => [&px(2), "dashed", "black"].join(" ");
+                St::BorderRadius => px(20),
+            ],
+            ev(Ev::DragEnter, |event| {
+                stop_and_prevent!(event);
+                Msg::DragEnter
+            }),
+            ev(Ev::DragOver, |event| {
+                let drag_event = event.into_drag_event();
+                stop_and_prevent!(drag_event);
+                drag_event.data_transfer().unwrap().set_drop_effect("copy");
+                Msg::DragOver
+            }),
+            ev(Ev::DragLeave, |event| {
+                stop_and_prevent!(event);
+                Msg::DragLeave
+            }),
+            ev(Ev::Drop, |event| {
+                let drag_event = event.into_drag_event();
+                stop_and_prevent!(drag_event);
+                let file_list = drag_event.data_transfer().unwrap().files().unwrap();
+                Msg::Drop(file_list)
+            }),
+            div![
+                style! {
+                    // we don't want to fire `DragLeave` when we are dragging over drop-zone children
+                    St::PointerEvents => "none",
+                },
+                model.drop_zone_content.clone(),
+            ],
         ],
-    ],]
+        if model.file_texts.is_empty() {
+            div!["Results"]
+        } else {
+            pre![&model.file_texts]
+        }
+    ]
 }
 
 pub fn main() {
