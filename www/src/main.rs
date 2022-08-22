@@ -106,6 +106,7 @@ fn view(model: &Model) -> Node<Msg> {
             St::Margin => "auto",
             St::Background => if model.drop_zone_active { "lightgreen" } else { "orange" },
             St::FontFamily => "monospace",
+            St::Color => "black",
             St::FontSize => "42px",
             St::Padding => "13px",
             St::FontWeight => "bold",
