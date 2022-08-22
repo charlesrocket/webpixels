@@ -101,17 +101,19 @@ macro_rules! stop_and_prevent {
 fn view(model: &Model) -> Node<Msg> {
     div![div![
         style![
-            St::Height => px(200),
-            St::Width => px(400),
+            St::Height => "auto",
+            St::Width => "auto",
             St::Margin => "auto",
             St::Background => if model.drop_zone_active { "lightgreen" } else { "orange" },
             St::FontFamily => "monospace",
-            St::FontSize => "35px",
+            St::FontSize => "42px",
+            St::Padding => "13px",
+            St::FontWeight => "bold",
             St::Display => "flex",
             St::FlexDirection => "column",
             St::JustifyContent => "center",
             St::AlignItems => "center",
-            St::Border => [&px(3), "dashed", "black"].join(" ");
+            St::Border => [&px(7), "dashed", "black"].join(" ");
         ],
         ev(Ev::DragEnter, |event| {
             stop_and_prevent!(event);
