@@ -150,9 +150,17 @@ fn view(model: &Model) -> Node<Msg> {
                 model.drop_zone_content.clone(),
             ],
         ],
-        img![attrs! {
-            At::Src => model.image_view
-        },],
+        div![
+            style![
+                St::Padding => "23px",
+                St::Display => "flex",
+                St::FlexDirection => "column",
+                St::AlignItems => "center",
+            ],
+            img![attrs! {
+                At::Src => model.image_view
+            },],
+        ],
     ]
 }
 
