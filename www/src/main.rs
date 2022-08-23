@@ -178,7 +178,6 @@ fn view(model: &Model) -> Node<Msg> {
                     St::Display => "flex",
                     St::FlexDirection => "column",
                     St::AlignItems => "center",
-                    St::Padding => "10px",
                 ],
                 button![
                     "DOWNLOAD",
