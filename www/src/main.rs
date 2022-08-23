@@ -157,18 +157,28 @@ fn view(model: &Model) -> Node<Msg> {
         ],
         if !model.image_view.is_empty() {
             div![
+                div![
+                    style![
+                        St::Display => "flex",
+                        St::FlexDirection => "column",
+                        St::AlignItems => "center",
+                        St::Padding => "10px",
+                    ],
+                    img![
+                        attrs! {
+                            At::Src => model.image_view
+                            At::Width => "650px"
+                        },
+                        style![
+                            St::Border => [&px(7), "solid", "black"].join(" "),
+                        ],
+                    ],
+                ],
                 style![
                     St::Display => "flex",
                     St::FlexDirection => "column",
                     St::AlignItems => "center",
-                ],
-                img![
-                    attrs! {
-                        At::Src => model.image_view
-                    },
-                    style![
-                        St::Padding => "10px",
-                    ],
+                    St::Padding => "10px",
                 ],
                 button![
                     "DOWNLOAD",
