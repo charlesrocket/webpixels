@@ -60,7 +60,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                     );
 
                     log!("PIXELMOSH: DONE", file.name());
-                    Msg::FileView(new_array);
+                    Msg::FileView(new_array) //;
                 });
             }
         }
@@ -68,9 +68,9 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             let array = js_sys::Array::new();
             array.push(&input.buffer());
 
-            let new_image = JsValue::from(array);
+            let image = JsValue::from(array);
             let blob = web_sys::Blob::new_with_u8_array_sequence_and_options(
-                &new_image,
+                &image,
                 web_sys::BlobPropertyBag::new().type_("image/png"),
             )
             .unwrap();
