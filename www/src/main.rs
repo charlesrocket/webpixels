@@ -23,6 +23,7 @@ enum Msg {
     DragOver,
     DragLeave,
     Drop(FileList),
+    FileView(js_sys::Uint8Array),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -59,21 +60,24 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                     );
 
                     log!("PIXELMOSH: DONE", file.name());
-
-                    let array2 = js_sys::Array::new();
-                    array2.push(&new_array.buffer());
-
-                    let new_image = JsValue::from(array2);
-                    let blob = web_sys::Blob::new_with_u8_array_sequence_and_options(
-                        &new_image,
-                        web_sys::BlobPropertyBag::new().type_("image/png"),
-                    )
-                    .unwrap();
-                    let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
-                    let window = web_sys::window().unwrap();
-                    window.open_with_url(&url).unwrap();
+                    Msg::FileView(new_array);
                 });
             }
+        }
+        Msg::FileView(input) => {
+            let array = js_sys::Array::new();
+            array.push(&input.buffer());
+
+            let new_image = JsValue::from(array);
+            let blob = web_sys::Blob::new_with_u8_array_sequence_and_options(
+                &new_image,
+                web_sys::BlobPropertyBag::new().type_("image/png"),
+            )
+            .unwrap();
+
+            let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
+            let window = web_sys::window().unwrap();
+            window.open_with_url(&url).unwrap();
         }
     }
 }
