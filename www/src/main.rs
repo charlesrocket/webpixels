@@ -155,28 +155,32 @@ fn view(model: &Model) -> Node<Msg> {
                 model.drop_zone_content.clone(),
             ],
         ],
-        div![
-            style![
-                St::Display => "flex",
-                St::FlexDirection => "column",
-                St::AlignItems => "center",
-            ],
-            img![
-                attrs! {
-                    At::Src => model.image_view
-                },
+        if !model.image_view.is_empty() {
+            div![
                 style![
-                    St::Padding => "10px",
+                    St::Display => "flex",
+                    St::FlexDirection => "column",
+                    St::AlignItems => "center",
                 ],
-            ],
-            button![
-                "DOWNLOAD",
-                ev(Ev::Click, |_| Msg::Download),
-                style![
-                    St::Padding => "5px",
+                img![
+                    attrs! {
+                        At::Src => model.image_view
+                    },
+                    style![
+                        St::Padding => "10px",
+                    ],
                 ],
-            ],
-        ],
+                button![
+                    "DOWNLOAD",
+                    ev(Ev::Click, |_| Msg::Download),
+                    style![
+                        St::Padding => "4px",
+                    ],
+                ],
+            ]
+        } else {
+            div![""]
+        }
     ]
 }
 
