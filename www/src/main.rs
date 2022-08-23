@@ -21,6 +21,7 @@ struct Model {
 }
 
 enum Msg {
+    Download,
     DragEnter,
     DragOver,
     DragLeave,
@@ -30,6 +31,10 @@ enum Msg {
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
+        Msg::Download => {
+            let window = web_sys::window().unwrap();
+            window.open_with_url(&model.image_view).unwrap();
+        }
         Msg::DragEnter => model.drop_zone_active = true,
         Msg::DragOver => (),
         Msg::DragLeave => model.drop_zone_active = false,
@@ -152,14 +157,25 @@ fn view(model: &Model) -> Node<Msg> {
         ],
         div![
             style![
-                St::Padding => "23px",
                 St::Display => "flex",
                 St::FlexDirection => "column",
                 St::AlignItems => "center",
             ],
-            img![attrs! {
-                At::Src => model.image_view
-            },],
+            img![
+                attrs! {
+                    At::Src => model.image_view
+                },
+                style![
+                    St::Padding => "10px",
+                ],
+            ],
+            button![
+                "DOWNLOAD",
+                ev(Ev::Click, |_| Msg::Download),
+                style![
+                    St::Padding => "5px",
+                ],
+            ],
         ],
     ]
 }
