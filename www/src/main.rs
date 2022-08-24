@@ -1,7 +1,7 @@
-use seed::{prelude::*, *};
 use js_sys::{Array, Uint8Array};
+use seed::{prelude::*, *};
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{self, DragEvent, Event, FileList};
+use web_sys::{self, Blob, BlobPropertyBag, DragEvent, Event, FileList};
 
 use webpixels::{pixelmosh, Options};
 
@@ -78,9 +78,9 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             array.push(&input.buffer());
 
             let image = JsValue::from(array);
-            let blob = web_sys::Blob::new_with_u8_array_sequence_and_options(
+            let blob = Blob::new_with_u8_array_sequence_and_options(
                 &image,
-                web_sys::BlobPropertyBag::new().type_("image/png"),
+                BlobPropertyBag::new().type_("image/png"),
             )
             .unwrap();
 
