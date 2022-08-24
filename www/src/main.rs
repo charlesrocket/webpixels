@@ -1,4 +1,5 @@
 use seed::{prelude::*, *};
+use js_sys::{Array, Uint8Array};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{self, DragEvent, Event, FileList};
 
@@ -56,11 +57,11 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                         .expect("read file");
 
                     let options = Options::default();
-                    let array = js_sys::Uint8Array::new(&image);
+                    let array = Uint8Array::new(&image);
                     let bytes: Vec<u8> = array.to_vec();
                     let new_array = js_sys::Uint8Array::new(
                         &unsafe {
-                            js_sys::Uint8Array::view(
+                            Uint8Array::view(
                                 &pixelmosh(&bytes, &options).expect("PIXELMOSH failed"),
                             )
                         }
@@ -73,7 +74,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             }
         }
         Msg::FileView(input) => {
-            let array = js_sys::Array::new();
+            let array = Array::new();
             array.push(&input.buffer());
 
             let image = JsValue::from(array);
