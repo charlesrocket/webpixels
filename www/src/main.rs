@@ -27,7 +27,7 @@ enum Msg {
     DragOver,
     DragLeave,
     Drop(FileList),
-    FileView(js_sys::Uint8Array),
+    FileView(Uint8Array),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
