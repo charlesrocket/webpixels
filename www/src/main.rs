@@ -59,7 +59,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                     let options = Options::default();
                     let array = Uint8Array::new(&image);
                     let bytes: Vec<u8> = array.to_vec();
-                    let new_array = js_sys::Uint8Array::new(
+                    let new_array = Uint8Array::new(
                         &unsafe {
                             Uint8Array::view(
                                 &pixelmosh(&bytes, &options).expect("PIXELMOSH failed"),
