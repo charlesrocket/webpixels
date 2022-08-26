@@ -9,16 +9,18 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         drop_zone_active: false,
         drop_zone_content: vec![div!["PNG DROP ZONE"]],
-        file_texts: Vec::new(),
+        file_texts: vec![0, 0],
         image_view: "".to_string(),
+        storage_active: false,
     }
 }
 
 struct Model {
     drop_zone_active: bool,
     drop_zone_content: Vec<Node<Msg>>,
-    file_texts: Vec<String>,
+    file_texts: Vec<u8>,
     image_view: String,
+    storage_active: bool,
 }
 
 enum Msg {
@@ -27,7 +29,8 @@ enum Msg {
     DragOver,
     DragLeave,
     Drop(FileList),
-    FileView(Uint8Array),
+    FileStore(JsValue),
+    PixelMosh,
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -55,23 +58,27 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                     .await
                     .expect("read file");
 
-                let options = Options::default();
-                let array = Uint8Array::new(&image);
-                let bytes: Vec<u8> = array.to_vec();
-                let new_array = Uint8Array::new(
-                    &unsafe {
-                        Uint8Array::view(&pixelmosh(&bytes, &options).expect("PIXELMOSH failed"))
-                    }
-                    .into(),
-                );
-
-                log!("PIXELMOSH: DONE");
-                Msg::FileView(new_array)
+                Msg::FileStore(image)
             });
         }
-        Msg::FileView(input) => {
+        Msg::FileStore(image) => {
+            let array = Uint8Array::new(&image);
+            let bytes: Vec<u8> = array.to_vec();
+            model.file_texts = bytes;
+            model.storage_active = true;
+        }
+        Msg::PixelMosh => {
+            let options = Options::default();
+            let new_array = Uint8Array::new(
+                &unsafe {
+                    Uint8Array::view(
+                        &pixelmosh(&model.file_texts, &options).expect("PIXELMOSH failed"),
+                    )
+                }
+                .into(),
+            );
             let array = Array::new();
-            array.push(&input.buffer());
+            array.push(&new_array.buffer());
 
             let image = JsValue::from(array);
             let blob = Blob::new_with_u8_array_sequence_and_options(
@@ -152,7 +159,7 @@ fn view(model: &Model) -> Node<Msg> {
                 model.drop_zone_content.clone(),
             ],
         ],
-        if !model.image_view.is_empty() {
+        if model.storage_active {
             div![
                 div![
                     style![
@@ -175,6 +182,14 @@ fn view(model: &Model) -> Node<Msg> {
                     St::Display => "flex",
                     St::FlexDirection => "column",
                     St::AlignItems => "center",
+                ],
+                button![
+                    "MOSH",
+                    ev(Ev::Click, |_| Msg::PixelMosh,),
+                    style![
+                        St::Padding => "4px",
+
+                    ],
                 ],
                 button![
                     "DOWNLOAD",
