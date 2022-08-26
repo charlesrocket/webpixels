@@ -50,28 +50,24 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 
             model.drop_zone_content = files.iter().map(|file| div![file.name()]).collect();
 
-            for file in files {
-                orders.perform_cmd(async move {
-                    let image = JsFuture::from(file.array_buffer())
-                        .await
-                        .expect("read file");
+            orders.perform_cmd(async move {
+                let image = JsFuture::from(files.last().unwrap().array_buffer())
+                    .await
+                    .expect("read file");
 
-                    let options = Options::default();
-                    let array = Uint8Array::new(&image);
-                    let bytes: Vec<u8> = array.to_vec();
-                    let new_array = Uint8Array::new(
-                        &unsafe {
-                            Uint8Array::view(
-                                &pixelmosh(&bytes, &options).expect("PIXELMOSH failed"),
-                            )
-                        }
-                        .into(),
-                    );
+                let options = Options::default();
+                let array = Uint8Array::new(&image);
+                let bytes: Vec<u8> = array.to_vec();
+                let new_array = Uint8Array::new(
+                    &unsafe {
+                        Uint8Array::view(&pixelmosh(&bytes, &options).expect("PIXELMOSH failed"))
+                    }
+                    .into(),
+                );
 
-                    log!("PIXELMOSH: DONE", file.name());
-                    Msg::FileView(new_array)
-                });
-            }
+                log!("PIXELMOSH: DONE");
+                Msg::FileView(new_array)
+            });
         }
         Msg::FileView(input) => {
             let array = Array::new();
