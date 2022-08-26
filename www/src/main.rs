@@ -9,18 +9,20 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         drop_zone_active: false,
         drop_zone_content: vec![div!["PNG DROP ZONE"]],
-        file_texts: vec![0, 0],
         image_view: "".to_string(),
+        storage: vec![0, 0],
         storage_active: false,
+        options: Options::default(),
     }
 }
 
 struct Model {
     drop_zone_active: bool,
     drop_zone_content: Vec<Node<Msg>>,
-    file_texts: Vec<u8>,
     image_view: String,
+    storage: Vec<u8>,
     storage_active: bool,
+    options: Options,
 }
 
 enum Msg {
@@ -44,7 +46,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::DragLeave => model.drop_zone_active = false,
         Msg::Drop(file_list) => {
             model.drop_zone_active = false;
-            model.file_texts.clear();
+            model.storage.clear();
             model.image_view.clear();
 
             let files = (0..file_list.length())
@@ -64,15 +66,16 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::FileStore(image) => {
             let array = Uint8Array::new(&image);
             let bytes: Vec<u8> = array.to_vec();
-            model.file_texts = bytes;
+            model.storage = bytes;
             model.storage_active = true;
+            log!("IMAGE LOADED");
         }
         Msg::PixelMosh => {
             let options = Options::default();
             let new_array = Uint8Array::new(
                 &unsafe {
                     Uint8Array::view(
-                        &pixelmosh(&model.file_texts, &options).expect("PIXELMOSH failed"),
+                        &pixelmosh(&model.storage, &options).expect("PIXELMOSH failed"),
                     )
                 }
                 .into(),
@@ -89,6 +92,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 
             let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
             model.image_view = url;
+            log!("PIXELMOSH: DONE");
         }
     }
 }
