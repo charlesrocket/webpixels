@@ -11,6 +11,7 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
         drop_zone_content: vec![div!["PNG DROP ZONE"]],
         image_view: "".to_string(),
         options: Options::default(),
+        pixelmosh_active: false,
         storage: vec![0, 0],
         storage_active: false,
     }
@@ -21,6 +22,7 @@ struct Model {
     drop_zone_content: Vec<Node<Msg>>,
     image_view: String,
     options: Options,
+    pixelmosh_active: bool,
     storage: Vec<u8>,
     storage_active: bool,
 }
@@ -33,7 +35,6 @@ enum Msg {
     Drop(FileList),
     FileStore(JsValue),
     PixelMosh,
-    SetSeed,
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -94,9 +95,8 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             model.image_view = url;
             log!("PIXELMOSH: DONE");
             log!(model.options.seed());
-        }
-        Msg::SetSeed => {
             model.options.set_seed(Options::default().seed());
+            model.pixelmosh_active = true;
         }
     }
 }
@@ -176,7 +176,7 @@ fn view(model: &Model) -> Node<Msg> {
                         St::AlignItems => "center",
                         St::Padding => "12px",
                     ],
-                    img![
+                    IF!(model.pixelmosh_active => img![
                         attrs! {
                             At::Src => model.image_view
                             At::Width => "650px"
@@ -184,38 +184,38 @@ fn view(model: &Model) -> Node<Msg> {
                         style![
                             St::Border => [&px(7), "solid", "black"].join(" "),
                         ],
-                    ],
+                    ])
                 ],
                 style![
                     St::Display => "flex",
                     St::FlexDirection => "column",
                     St::AlignItems => "center",
                 ],
-                button![
-                    "MOSH",
-                    ev(Ev::Click, |_| Msg::PixelMosh),
-                    style![
-                        St::Padding => "4px",
+                div![
+                    button![
+                        "PROCESS",
+                        ev(Ev::Click, |_| Msg::PixelMosh),
+                        style![
+                            St::Padding => "4px",
 
+                        ],
                     ],
-                ],
-                button![
-                    "DOWNLOAD",
-                    ev(Ev::Click, |_| Msg::Download),
+                    IF!(model.pixelmosh_active => button![
+                        "DOWNLOAD",
+                        ev(Ev::Click, |_| Msg::Download),
+                        style![
+                            St::Padding => "4px",
+                        ],
+                    ]),
                     style![
-                        St::Padding => "4px",
-                    ],
-                ],
-                button![
-                    "SEED",
-                    ev(Ev::Click, |_| Msg::SetSeed),
-                    style![
-                        St::Padding => "4px",
+                        St::Display => "flex",
+                        St::FlexDirection => "row",
+                        St::AlignItems => "center",
                     ],
                 ],
             ]
         } else {
-            div![""]
+            empty![]
         }
     ]
 }
