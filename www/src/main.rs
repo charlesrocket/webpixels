@@ -33,6 +33,7 @@ enum Msg {
     Drop(FileList),
     FileStore(JsValue),
     PixelMosh,
+    SetSeed,
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -71,11 +72,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             log!("IMAGE LOADED");
         }
         Msg::PixelMosh => {
-            let options = Options::default();
             let new_array = Uint8Array::new(
                 &unsafe {
                     Uint8Array::view(
-                        &pixelmosh(&model.storage, &options).expect("PIXELMOSH failed"),
+                        &pixelmosh(&model.storage, &model.options).expect("PIXELMOSH failed"),
                     )
                 }
                 .into(),
@@ -93,6 +93,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
             model.image_view = url;
             log!("PIXELMOSH: DONE");
+            log!(model.options.seed());
+        }
+        Msg::SetSeed => {
+            model.options.set_seed(Options::default().seed());
         }
     }
 }
@@ -189,7 +193,7 @@ fn view(model: &Model) -> Node<Msg> {
                 ],
                 button![
                     "MOSH",
-                    ev(Ev::Click, |_| Msg::PixelMosh,),
+                    ev(Ev::Click, |_| Msg::PixelMosh),
                     style![
                         St::Padding => "4px",
 
@@ -198,6 +202,13 @@ fn view(model: &Model) -> Node<Msg> {
                 button![
                     "DOWNLOAD",
                     ev(Ev::Click, |_| Msg::Download),
+                    style![
+                        St::Padding => "4px",
+                    ],
+                ],
+                button![
+                    "SEED",
+                    ev(Ev::Click, |_| Msg::SetSeed),
                     style![
                         St::Padding => "4px",
                     ],
