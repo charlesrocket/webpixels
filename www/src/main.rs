@@ -10,9 +10,9 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
         drop_zone_active: false,
         drop_zone_content: vec![div!["PNG DROP ZONE"]],
         image_view: "".to_string(),
+        options: Options::default(),
         storage: vec![0, 0],
         storage_active: false,
-        options: Options::default(),
     }
 }
 
@@ -20,9 +20,9 @@ struct Model {
     drop_zone_active: bool,
     drop_zone_content: Vec<Node<Msg>>,
     image_view: String,
+    options: Options,
     storage: Vec<u8>,
     storage_active: bool,
-    options: Options,
 }
 
 enum Msg {
