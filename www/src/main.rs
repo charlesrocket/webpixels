@@ -9,16 +9,22 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         drop_zone_active: false,
         drop_zone_content: vec![div!["PNG DROP ZONE"]],
-        file_texts: Vec::new(),
         image_view: "".to_string(),
+        options: Options::default(),
+        pixelmosh_active: false,
+        storage: vec![0, 0],
+        storage_active: false,
     }
 }
 
 struct Model {
     drop_zone_active: bool,
     drop_zone_content: Vec<Node<Msg>>,
-    file_texts: Vec<String>,
     image_view: String,
+    options: Options,
+    pixelmosh_active: bool,
+    storage: Vec<u8>,
+    storage_active: bool,
 }
 
 enum Msg {
@@ -27,7 +33,8 @@ enum Msg {
     DragOver,
     DragLeave,
     Drop(FileList),
-    FileView(Uint8Array),
+    FileStore(JsValue),
+    PixelMosh,
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -41,7 +48,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::DragLeave => model.drop_zone_active = false,
         Msg::Drop(file_list) => {
             model.drop_zone_active = false;
-            model.file_texts.clear();
+            model.storage.clear();
             model.image_view.clear();
 
             let files = (0..file_list.length())
@@ -55,23 +62,27 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                     .await
                     .expect("read file");
 
-                let options = Options::default();
-                let array = Uint8Array::new(&image);
-                let bytes: Vec<u8> = array.to_vec();
-                let new_array = Uint8Array::new(
-                    &unsafe {
-                        Uint8Array::view(&pixelmosh(&bytes, &options).expect("PIXELMOSH failed"))
-                    }
-                    .into(),
-                );
-
-                log!("PIXELMOSH: DONE");
-                Msg::FileView(new_array)
+                Msg::FileStore(image)
             });
         }
-        Msg::FileView(input) => {
+        Msg::FileStore(image) => {
+            let array = Uint8Array::new(&image);
+            let bytes: Vec<u8> = array.to_vec();
+            model.storage = bytes;
+            model.storage_active = true;
+            log!("IMAGE LOADED");
+        }
+        Msg::PixelMosh => {
+            let new_array = Uint8Array::new(
+                &unsafe {
+                    Uint8Array::view(
+                        &pixelmosh(&model.storage, &model.options).expect("PIXELMOSH failed"),
+                    )
+                }
+                .into(),
+            );
             let array = Array::new();
-            array.push(&input.buffer());
+            array.push(&new_array.buffer());
 
             let image = JsValue::from(array);
             let blob = Blob::new_with_u8_array_sequence_and_options(
@@ -82,6 +93,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 
             let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
             model.image_view = url;
+            log!("PIXELMOSH: DONE");
+            log!(model.options.seed());
+            model.options.set_seed(Options::default().seed());
+            model.pixelmosh_active = true;
         }
     }
 }
@@ -152,7 +167,7 @@ fn view(model: &Model) -> Node<Msg> {
                 model.drop_zone_content.clone(),
             ],
         ],
-        if !model.image_view.is_empty() {
+        if model.storage_active {
             div![
                 div![
                     style![
@@ -161,7 +176,7 @@ fn view(model: &Model) -> Node<Msg> {
                         St::AlignItems => "center",
                         St::Padding => "12px",
                     ],
-                    img![
+                    IF!(model.pixelmosh_active => img![
                         attrs! {
                             At::Src => model.image_view
                             At::Width => "650px"
@@ -169,23 +184,38 @@ fn view(model: &Model) -> Node<Msg> {
                         style![
                             St::Border => [&px(7), "solid", "black"].join(" "),
                         ],
-                    ],
+                    ])
                 ],
                 style![
                     St::Display => "flex",
                     St::FlexDirection => "column",
                     St::AlignItems => "center",
                 ],
-                button![
-                    "DOWNLOAD",
-                    ev(Ev::Click, |_| Msg::Download),
+                div![
+                    button![
+                        "PROCESS",
+                        ev(Ev::Click, |_| Msg::PixelMosh),
+                        style![
+                            St::Padding => "4px",
+
+                        ],
+                    ],
+                    IF!(model.pixelmosh_active => button![
+                        "DOWNLOAD",
+                        ev(Ev::Click, |_| Msg::Download),
+                        style![
+                            St::Padding => "4px",
+                        ],
+                    ]),
                     style![
-                        St::Padding => "4px",
+                        St::Display => "flex",
+                        St::FlexDirection => "row",
+                        St::AlignItems => "center",
                     ],
                 ],
             ]
         } else {
-            div![""]
+            empty![]
         }
     ]
 }
