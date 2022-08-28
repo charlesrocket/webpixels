@@ -42,7 +42,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             orders.perform_cmd(async move {
                 let image = JsFuture::from(file.unwrap().array_buffer())
                     .await
-                    .expect("read file");
+                    .expect("Can not read file");
 
                 Msg::PixelMosh(image)
             });
@@ -52,8 +52,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             let bytes: Vec<u8> = array.to_vec();
             model.storage = bytes;
             model.storage_active = true;
+            model.pixelmosh_active = true;
+            log!(model.options.seed());
 
-            let new_array = Uint8Array::new(
+            let mosh_array = Uint8Array::new(
                 &unsafe {
                     Uint8Array::view(
                         &pixelmosh(&model.storage, &model.options).expect("PIXELMOSH failed"),
@@ -63,7 +65,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             );
 
             let array = Array::new();
-            array.push(&new_array.buffer());
+            array.push(&mosh_array.buffer());
 
             let image = JsValue::from(array);
             let blob = Blob::new_with_u8_array_sequence_and_options(
@@ -74,12 +76,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 
             let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
             model.image_view = url;
-            log!(model.options.seed());
             model.options.set_seed(Options::default().seed());
-            model.pixelmosh_active = true;
         }
         Msg::ReMosh => {
-            let new_array = Uint8Array::new(
+            let mosh_array = Uint8Array::new(
                 &unsafe {
                     Uint8Array::view(
                         &pixelmosh(&model.storage, &model.options).expect("PIXELMOSH failed"),
@@ -89,7 +89,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             );
 
             let array = Array::new();
-            array.push(&new_array.buffer());
+            array.push(&mosh_array.buffer());
 
             let image = JsValue::from(array);
             let blob = Blob::new_with_u8_array_sequence_and_options(
