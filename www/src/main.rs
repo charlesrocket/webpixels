@@ -103,82 +103,82 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         }
         Msg::DecMinRate => {
             let value = model.options.min_rate() - 1;
-            model.options.set_min_rate(value);
+            model.options.set_min_rate(value.clamp(1, 100));
             log!(model.options.min_rate());
         }
         Msg::IncMinRate => {
             let value = model.options.min_rate() + 1;
-            model.options.set_min_rate(value);
+            model.options.set_min_rate(value.clamp(1, 100));
             log!(model.options.min_rate());
         }
         Msg::DecMaxRate => {
             let value = model.options.max_rate() - 1;
-            model.options.set_max_rate(value);
+            model.options.set_max_rate(value.clamp(1, 100));
             log!(model.options.max_rate());
         }
         Msg::IncMaxRate => {
             let value = model.options.max_rate() + 1;
-            model.options.set_max_rate(value);
+            model.options.set_max_rate(value.clamp(1, 100));
             log!(model.options.max_rate());
         }
         Msg::DecPixelation => {
             let value = model.options.pixelation() - 1;
-            model.options.set_pixelation(value);
+            model.options.set_pixelation(value.clamp(1, 255));
             log!(model.options.pixelation());
         }
         Msg::IncPixelation => {
             let value = model.options.pixelation() + 1;
-            model.options.set_pixelation(value);
+            model.options.set_pixelation(value.clamp(1, 255));
             log!(model.options.pixelation());
         }
         Msg::DecLineShift => {
             let value = model.options.line_shift() - 0.1;
-            model.options.set_line_shift(value);
+            model.options.set_line_shift(value.clamp(0.0, 1.0));
             log!(model.options.line_shift());
         }
         Msg::IncLineShift => {
             let value = model.options.line_shift() + 0.1;
-            model.options.set_line_shift(value);
+            model.options.set_line_shift(value.clamp(0.0, 1.0));
             log!(model.options.line_shift());
         }
         Msg::DecReverse => {
             let value = model.options.reverse() - 0.1;
-            model.options.set_reverse(value);
+            model.options.set_reverse(value.clamp(0.0, 1.0));
             log!(model.options.reverse());
         }
         Msg::IncReverse => {
             let value = model.options.reverse() + 0.1;
-            model.options.set_reverse(value);
+            model.options.set_reverse(value.clamp(0.0, 1.0));
             log!(model.options.reverse());
         }
         Msg::DecFlip => {
             let value = model.options.flip() - 0.1;
-            model.options.set_flip(value);
+            model.options.set_flip(value.clamp(0.0, 1.0));
             log!(model.options.flip());
         }
         Msg::IncFlip => {
             let value = model.options.flip() + 0.1;
-            model.options.set_flip(value);
+            model.options.set_flip(value.clamp(0.0, 1.0));
             log!(model.options.flip());
         }
         Msg::DecChannelSwap => {
             let value = model.options.channel_swap() - 0.1;
-            model.options.set_channel_swap(value);
+            model.options.set_channel_swap(value.clamp(0.0, 1.0));
             log!(model.options.channel_swap());
         }
         Msg::IncChannelSwap => {
             let value = model.options.channel_swap() + 0.1;
-            model.options.set_channel_swap(value);
+            model.options.set_channel_swap(value.clamp(0.0, 1.0));
             log!(model.options.channel_swap());
         }
         Msg::DecChannelShift => {
             let value = model.options.channel_shift() - 0.1;
-            model.options.set_channel_shift(value);
+            model.options.set_channel_shift(value.clamp(0.0, 1.0));
             log!(model.options.channel_shift());
         }
         Msg::IncChannelShift => {
             let value = model.options.channel_shift() + 0.1;
-            model.options.set_channel_shift(value);
+            model.options.set_channel_shift(value.clamp(0.0, 1.0));
             log!(model.options.channel_shift());
         }
     }
