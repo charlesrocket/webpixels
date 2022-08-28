@@ -9,7 +9,6 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         image_view: "".to_string(),
         options: Options::default(),
-        pixelmosh_active: false,
         storage: vec![0, 0],
         storage_active: false,
     }
@@ -18,7 +17,6 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 struct Model {
     image_view: String,
     options: Options,
-    pixelmosh_active: bool,
     storage: Vec<u8>,
     storage_active: bool,
 }
@@ -70,7 +68,6 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             orders.send_msg(Msg::PixelMosh);
         }
         Msg::PixelMosh => {
-            model.pixelmosh_active = true;
             log!(model.options.seed());
             let mosh_array = Uint8Array::new(
                 &unsafe {
@@ -124,7 +121,7 @@ fn view(model: &Model) -> Node<Msg> {
                         St::AlignItems => "center",
                         St::Padding => "12px",
                     ],
-                    IF!(model.pixelmosh_active => img![
+                    img![
                         attrs! {
                             At::Src => model.image_view
                             At::Width => "500px"
@@ -132,7 +129,7 @@ fn view(model: &Model) -> Node<Msg> {
                         style![
                             St::Border => [&px(7), "solid", "black"].join(" "),
                         ],
-                    ])
+                    ],
                 ],
                 style![
                     St::Display => "flex",
@@ -140,20 +137,20 @@ fn view(model: &Model) -> Node<Msg> {
                     St::AlignItems => "center",
                 ],
                 div![
-                    IF!(model.pixelmosh_active => button![
+                    button![
                         "MOSH",
                         ev(Ev::Click, |_| Msg::PixelMosh),
                         style![
                             St::Padding => "4px",
                         ],
-                    ]),
-                    IF!(model.pixelmosh_active => button![
+                    ],
+                    button![
                         "DOWNLOAD",
                         ev(Ev::Click, |_| Msg::Download),
                         style![
                             St::Padding => "4px",
                         ],
-                    ]),
+                    ],
                     style![
                         St::Display => "flex",
                         St::FlexDirection => "row",
