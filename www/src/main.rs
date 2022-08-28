@@ -47,8 +47,8 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 Msg::FileStore(image)
             });
         }
-        Msg::FileStore(image) => {
-            let array = Uint8Array::new(&image);
+        Msg::FileStore(file) => {
+            let array = Uint8Array::new(&file);
             let bytes: Vec<u8> = array.to_vec();
 
             model.storage = bytes;
@@ -56,9 +56,9 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 
             orders.send_msg(Msg::PixelMosh);
         }
-        Msg::FileView(image) => {
+        Msg::FileView(file) => {
             let array = Array::new();
-            array.push(&image.buffer());
+            array.push(&file.buffer());
 
             let image = JsValue::from(array);
             let blob = Blob::new_with_u8_array_sequence_and_options(
