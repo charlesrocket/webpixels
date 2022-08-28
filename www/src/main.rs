@@ -146,7 +146,7 @@ fn view(model: &Model) -> Node<Msg> {
                     IF!(model.pixelmosh_active => img![
                         attrs! {
                             At::Src => model.image_view
-                            At::Width => "650px"
+                            At::Width => "500px"
                         },
                         style![
                             St::Border => [&px(7), "solid", "black"].join(" "),
@@ -177,11 +177,25 @@ fn view(model: &Model) -> Node<Msg> {
                         St::Display => "flex",
                         St::FlexDirection => "row",
                         St::AlignItems => "center",
+                        St::Padding => "3px",
+                        St::Border => [&px(3), "dashed", "black"].join(" "),
                     ],
                 ],
             ]
         } else {
-            empty![]
+            div![
+                "WAITING FOR PNG FILE",
+                style![
+                    St::Display => "flex",
+                    St::FlexDirection => "column",
+                    St::AlignItems => "center",
+                    St::Margin => "11px",
+                    St::Padding => "3px",
+                    St::FontFamily => "monospace",
+                    St::FontSize => "medium",
+                    St::Border => [&px(3), "dashed", "black"].join(" "),
+                ]
+            ]
         }
     ]
 }
