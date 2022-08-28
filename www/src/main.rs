@@ -46,6 +46,13 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 Msg::FileStore(image)
             });
         }
+        Msg::FileStore(image) => {
+            let array = Uint8Array::new(&image);
+            let bytes: Vec<u8> = array.to_vec();
+            model.storage = bytes;
+            model.storage_active = true;
+            orders.send_msg(Msg::PixelMosh);
+        }
         Msg::FileView(image) => {
             let array = Array::new();
             array.push(&image.buffer());
@@ -59,13 +66,6 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 
             let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
             model.image_view = url;
-        }
-        Msg::FileStore(image) => {
-            let array = Uint8Array::new(&image);
-            let bytes: Vec<u8> = array.to_vec();
-            model.storage = bytes;
-            model.storage_active = true;
-            orders.send_msg(Msg::PixelMosh);
         }
         Msg::PixelMosh => {
             log!(model.options.seed());
