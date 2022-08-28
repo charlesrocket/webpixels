@@ -177,7 +177,7 @@ fn view(model: &Model) -> Node<Msg> {
                         St::Display => "flex",
                         St::FlexDirection => "row",
                         St::AlignItems => "center",
-                        St::Padding => "3px",
+                        St::Padding => "5px",
                         St::Border => [&px(3), "dashed", "black"].join(" "),
                     ],
                 ],
