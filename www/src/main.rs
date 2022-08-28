@@ -38,6 +38,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::FileChanged(file) => {
             model.image_view.clear();
             model.storage.clear();
+
             orders.perform_cmd(async move {
                 let image = JsFuture::from(file.unwrap().array_buffer())
                     .await
@@ -49,8 +50,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::FileStore(image) => {
             let array = Uint8Array::new(&image);
             let bytes: Vec<u8> = array.to_vec();
+
             model.storage = bytes;
             model.storage_active = true;
+
             orders.send_msg(Msg::PixelMosh);
         }
         Msg::FileView(image) => {
