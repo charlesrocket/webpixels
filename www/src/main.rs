@@ -7,6 +7,7 @@ use webpixels::{pixelmosh, Options};
 
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
+        controls: false,
         image_view: "".to_string(),
         options: Options::default(),
         storage: vec![0, 0],
@@ -15,6 +16,7 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 }
 
 struct Model {
+    controls: bool,
     image_view: String,
     options: Options,
     storage: Vec<u8>,
@@ -22,6 +24,7 @@ struct Model {
 }
 
 enum Msg {
+    ControlsRequested,
     Download,
     FileChanged(Option<File>),
     FileStore(JsValue),
@@ -48,6 +51,7 @@ enum Msg {
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
+        Msg::ControlsRequested => model.controls = true,
         Msg::Download => {
             let window = web_sys::window().unwrap();
             window.open_with_url(&model.image_view).unwrap();
@@ -259,63 +263,81 @@ fn view(model: &Model) -> Node<Msg> {
                         St::Border => [&px(3), "dashed", "black"].join(" "),
                     ],
                 ],
-                div![
+                if model.controls {
                     div![
-                        div!["Min rate: ", model.options.min_rate().to_string()],
-                        button![ev(Ev::Click, |_| Msg::DecMinRate), "-"],
-                        button![ev(Ev::Click, |_| Msg::IncMinRate), "+"],
-                        div!["Max rate: ", model.options.max_rate().to_string()],
-                        button![ev(Ev::Click, |_| Msg::DecMaxRate), "-"],
-                        button![ev(Ev::Click, |_| Msg::IncMaxRate), "+"],
-                        style![
-                            St::Padding => "4px",
+                        div![
+                            div!["Min rate: ", model.options.min_rate().to_string()],
+                            button![ev(Ev::Click, |_| Msg::DecMinRate), "-"],
+                            button![ev(Ev::Click, |_| Msg::IncMinRate), "+"],
+                            div!["Max rate: ", model.options.max_rate().to_string()],
+                            button![ev(Ev::Click, |_| Msg::DecMaxRate), "-"],
+                            button![ev(Ev::Click, |_| Msg::IncMaxRate), "+"],
+                            style![
+                                St::Padding => "4px",
+                            ],
                         ],
-                    ],
+                        div![
+                            div!["Pixelation: ", model.options.pixelation().to_string()],
+                            button![ev(Ev::Click, |_| Msg::DecPixelation), "-"],
+                            button![ev(Ev::Click, |_| Msg::IncPixelation), "+"],
+                            div!["Line shift: ", model.options.line_shift().to_string()],
+                            button![ev(Ev::Click, |_| Msg::DecLineShift), "-"],
+                            button![ev(Ev::Click, |_| Msg::IncLineShift), "+"],
+                            style![
+                                St::Padding => "4px",
+                            ],
+                        ],
+                        div![
+                            div!["Reverse: ", model.options.reverse().to_string()],
+                            button![ev(Ev::Click, |_| Msg::DecReverse), "-"],
+                            button![ev(Ev::Click, |_| Msg::IncReverse), "+"],
+                            div!["Flip: ", model.options.flip().to_string()],
+                            button![ev(Ev::Click, |_| Msg::DecFlip), "-"],
+                            button![ev(Ev::Click, |_| Msg::IncFlip), "+"],
+                            style![
+                                St::Padding => "4px",
+                            ],
+                        ],
+                        div![
+                            div!["Channel Swap: ", model.options.channel_swap().to_string()],
+                            button![ev(Ev::Click, |_| Msg::DecChannelSwap), "-"],
+                            button![ev(Ev::Click, |_| Msg::IncChannelSwap), "+"],
+                            div!["Channel Shift: ", model.options.channel_shift().to_string()],
+                            button![ev(Ev::Click, |_| Msg::DecChannelShift), "-"],
+                            button![ev(Ev::Click, |_| Msg::IncChannelShift), "+"],
+                            style![
+                                St::Padding => "4px",
+                            ],
+                        ],
+                        style![
+                            St::Display => "flex",
+                            St::FlexDirection => "row",
+                            St::AlignItems => "center",
+                            St::TextAlign => "center",
+                            St::FontFamily => "monospace",
+                            St::FontSize => "x-small",
+                            St::Padding => "5px",
+                            St::Margin => "5px",
+                            St::Border => [&px(3), "dashed", "black"].join(" "),
+                        ],
+                    ]
+                } else {
                     div![
-                        div!["Pixelation: ", model.options.pixelation().to_string()],
-                        button![ev(Ev::Click, |_| Msg::DecPixelation), "-"],
-                        button![ev(Ev::Click, |_| Msg::IncPixelation), "+"],
-                        div!["Line shift: ", model.options.line_shift().to_string()],
-                        button![ev(Ev::Click, |_| Msg::DecLineShift), "-"],
-                        button![ev(Ev::Click, |_| Msg::IncLineShift), "+"],
-                        style![
-                            St::Padding => "4px",
+                        button![
+                            "SETTINGS",
+                            ev(Ev::Click, |_| Msg::ControlsRequested),
+                            style![
+                                St::Padding => "4px",
+                                St::FontSize => "small",
+                            ],
                         ],
-                    ],
-                    div![
-                        div!["Reverse: ", model.options.reverse().to_string()],
-                        button![ev(Ev::Click, |_| Msg::DecReverse), "-"],
-                        button![ev(Ev::Click, |_| Msg::IncReverse), "+"],
-                        div!["Flip: ", model.options.flip().to_string()],
-                        button![ev(Ev::Click, |_| Msg::DecFlip), "-"],
-                        button![ev(Ev::Click, |_| Msg::IncFlip), "+"],
                         style![
-                            St::Padding => "4px",
-                        ],
-                    ],
-                    div![
-                        div!["Channel Swap: ", model.options.channel_swap().to_string()],
-                        button![ev(Ev::Click, |_| Msg::DecChannelSwap), "-"],
-                        button![ev(Ev::Click, |_| Msg::IncChannelSwap), "+"],
-                        div!["Channel Shift: ", model.options.channel_shift().to_string()],
-                        button![ev(Ev::Click, |_| Msg::DecChannelShift), "-"],
-                        button![ev(Ev::Click, |_| Msg::IncChannelShift), "+"],
-                        style![
-                            St::Padding => "4px",
-                        ],
-                    ],
-                    style![
-                        St::Display => "flex",
-                        St::FlexDirection => "row",
-                        St::AlignItems => "center",
-                        St::TextAlign => "center",
-                        St::FontFamily => "monospace",
-                        St::FontSize => "x-small",
-                        St::Padding => "5px",
-                        St::Margin => "5px",
-                        St::Border => [&px(3), "dashed", "black"].join(" "),
-                    ],
-                ],
+                                St::Border => [&px(3), "dashed", "black"].join(" "),
+                                St::Margin => "5px",
+                                St::Padding => "4px",
+                        ]
+                    ]
+                }
             ]
         } else {
             div![
