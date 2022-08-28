@@ -1,14 +1,12 @@
 use js_sys::{Array, Uint8Array};
 use seed::{prelude::*, *};
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{self, Blob, BlobPropertyBag, DragEvent, Event, FileList};
+use web_sys::{self, Blob, BlobPropertyBag, DragEvent, Event, File};
 
 use webpixels::{pixelmosh, Options};
 
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
-        drop_zone_active: false,
-        drop_zone_content: vec![div!["PNG DROP ZONE"]],
         image_view: "".to_string(),
         options: Options::default(),
         pixelmosh_active: false,
@@ -18,8 +16,6 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 }
 
 struct Model {
-    drop_zone_active: bool,
-    drop_zone_content: Vec<Node<Msg>>,
     image_view: String,
     options: Options,
     pixelmosh_active: bool,
@@ -29,12 +25,8 @@ struct Model {
 
 enum Msg {
     Download,
-    DragEnter,
-    DragOver,
-    DragLeave,
-    Drop(FileList),
-    FileStore(JsValue),
-    PixelMosh,
+    FileChanged(Option<File>),
+    PixelMosh(JsValue),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -43,36 +35,22 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             let window = web_sys::window().unwrap();
             window.open_with_url(&model.image_view).unwrap();
         }
-        Msg::DragEnter => model.drop_zone_active = true,
-        Msg::DragOver => (),
-        Msg::DragLeave => model.drop_zone_active = false,
-        Msg::Drop(file_list) => {
-            model.drop_zone_active = false;
-            model.storage.clear();
-            model.image_view.clear();
-
-            let files = (0..file_list.length())
-                .map(|index| file_list.get(index).unwrap())
-                .collect::<Vec<_>>();
-
-            model.drop_zone_content = files.iter().map(|file| div![file.name()]).collect();
-
+        Msg::FileChanged(file) => {
             orders.perform_cmd(async move {
-                let image = JsFuture::from(files.last().unwrap().array_buffer())
+                let image = JsFuture::from(file.unwrap().array_buffer())
                     .await
                     .expect("read file");
 
-                Msg::FileStore(image)
+                Msg::PixelMosh(image)
             });
         }
-        Msg::FileStore(image) => {
+        Msg::PixelMosh(image) => {
             let array = Uint8Array::new(&image);
             let bytes: Vec<u8> = array.to_vec();
             model.storage = bytes;
             model.storage_active = true;
             log!("IMAGE LOADED");
-        }
-        Msg::PixelMosh => {
+
             let new_array = Uint8Array::new(
                 &unsafe {
                     Uint8Array::view(
@@ -81,6 +59,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 }
                 .into(),
             );
+
             let array = Array::new();
             array.push(&new_array.buffer());
 
@@ -93,7 +72,6 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 
             let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
             model.image_view = url;
-            log!("PIXELMOSH: DONE");
             log!(model.options.seed());
             model.options.set_seed(Options::default().seed());
             model.pixelmosh_active = true;
@@ -112,60 +90,33 @@ impl IntoDragEvent for Event {
     }
 }
 
-macro_rules! stop_and_prevent {
-    { $event:expr } => {
-        {
-            $event.stop_propagation();
-            $event.prevent_default();
-        }
-     };
-}
-
 fn view(model: &Model) -> Node<Msg> {
     div![
-        div![
+        input![
+            ev(Ev::Change, |event| {
+                let file = event
+                    .target()
+                    .and_then(|target| target.dyn_into::<web_sys::HtmlInputElement>().ok())
+                    .and_then(|file_input| file_input.files())
+                    .and_then(|file_list| file_list.get(0));
+
+                Msg::FileChanged(file)
+            }),
             style![
-                St::Height => "auto",
-                St::Width => "auto",
-                St::Margin => "auto",
-                St::Background => if model.drop_zone_active { "lightgreen" } else { "orange" },
+                St::Border => [&px(5), "dashed", "black"].join(" "),
+                St::Padding => "9px",
                 St::FontFamily => "monospace",
-                St::Color => "black",
-                St::FontSize => "42px",
-                St::Padding => "13px",
-                St::FontWeight => "bold",
-                St::Display => "flex",
-                St::FlexDirection => "column",
-                St::JustifyContent => "center",
-                St::AlignItems => "center",
-                St::Border => [&px(7), "dashed", "black"].join(" ");
             ],
-            ev(Ev::DragEnter, |event| {
-                stop_and_prevent!(event);
-                Msg::DragEnter
-            }),
-            ev(Ev::DragOver, |event| {
-                let drag_event = event.into_drag_event();
-                stop_and_prevent!(drag_event);
-                drag_event.data_transfer().unwrap().set_drop_effect("copy");
-                Msg::DragOver
-            }),
-            ev(Ev::DragLeave, |event| {
-                stop_and_prevent!(event);
-                Msg::DragLeave
-            }),
-            ev(Ev::Drop, |event| {
-                let drag_event = event.into_drag_event();
-                stop_and_prevent!(drag_event);
-                let file_list = drag_event.data_transfer().unwrap().files().unwrap();
-                Msg::Drop(file_list)
-            }),
-            div![
-                style! {
-                    St::PointerEvents => "none",
-                },
-                model.drop_zone_content.clone(),
-            ],
+            attrs! {
+                At::Type => "file",
+                At::Id => "form-file",
+                At::Accept => "image/png",
+            }
+        ],
+        style![
+            St::Display => "flex",
+            St::FlexDirection => "column",
+            St::AlignItems => "center",
         ],
         if model.storage_active {
             div![
@@ -192,14 +143,6 @@ fn view(model: &Model) -> Node<Msg> {
                     St::AlignItems => "center",
                 ],
                 div![
-                    button![
-                        "PROCESS",
-                        ev(Ev::Click, |_| Msg::PixelMosh),
-                        style![
-                            St::Padding => "4px",
-
-                        ],
-                    ],
                     IF!(model.pixelmosh_active => button![
                         "DOWNLOAD",
                         ev(Ev::Click, |_| Msg::Download),
