@@ -26,8 +26,9 @@ struct Model {
 enum Msg {
     Download,
     FileChanged(Option<File>),
-    PixelMosh(JsValue),
-    ReMosh,
+    FileStore(JsValue),
+    FileView(Uint8Array),
+    PixelMosh,
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -44,17 +45,33 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                     .await
                     .expect("Can not read file");
 
-                Msg::PixelMosh(image)
+                Msg::FileStore(image)
             });
         }
-        Msg::PixelMosh(image) => {
+        Msg::FileView(image) => {
+            let array = Array::new();
+            array.push(&image.buffer());
+
+            let image = JsValue::from(array);
+            let blob = Blob::new_with_u8_array_sequence_and_options(
+                &image,
+                BlobPropertyBag::new().type_("image/png"),
+            )
+            .unwrap();
+
+            let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
+            model.image_view = url;
+        }
+        Msg::FileStore(image) => {
             let array = Uint8Array::new(&image);
             let bytes: Vec<u8> = array.to_vec();
             model.storage = bytes;
             model.storage_active = true;
+            orders.send_msg(Msg::PixelMosh);
+        }
+        Msg::PixelMosh => {
             model.pixelmosh_active = true;
             log!(model.options.seed());
-
             let mosh_array = Uint8Array::new(
                 &unsafe {
                     Uint8Array::view(
@@ -64,43 +81,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 .into(),
             );
 
-            let array = Array::new();
-            array.push(&mosh_array.buffer());
-
-            let image = JsValue::from(array);
-            let blob = Blob::new_with_u8_array_sequence_and_options(
-                &image,
-                BlobPropertyBag::new().type_("image/png"),
-            )
-            .unwrap();
-
-            let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
-            model.image_view = url;
-            model.options.set_seed(Options::default().seed());
-        }
-        Msg::ReMosh => {
-            let mosh_array = Uint8Array::new(
-                &unsafe {
-                    Uint8Array::view(
-                        &pixelmosh(&model.storage, &model.options).expect("PIXELMOSH failed"),
-                    )
-                }
-                .into(),
-            );
-
-            let array = Array::new();
-            array.push(&mosh_array.buffer());
-
-            let image = JsValue::from(array);
-            let blob = Blob::new_with_u8_array_sequence_and_options(
-                &image,
-                BlobPropertyBag::new().type_("image/png"),
-            )
-            .unwrap();
-
-            let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
-            model.image_view = url;
-            log!(model.options.seed());
+            orders.send_msg(Msg::FileView(mosh_array));
             model.options.set_seed(Options::default().seed());
         }
     }
@@ -161,7 +142,7 @@ fn view(model: &Model) -> Node<Msg> {
                 div![
                     IF!(model.pixelmosh_active => button![
                         "MOSH",
-                        ev(Ev::Click, |_| Msg::ReMosh),
+                        ev(Ev::Click, |_| Msg::PixelMosh),
                         style![
                             St::Padding => "4px",
                         ],
