@@ -37,6 +37,8 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             window.open_with_url(&model.image_view).unwrap();
         }
         Msg::FileChanged(file) => {
+            model.image_view.clear();
+            model.storage.clear();
             orders.perform_cmd(async move {
                 let image = JsFuture::from(file.unwrap().array_buffer())
                     .await
