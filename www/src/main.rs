@@ -1,7 +1,7 @@
 use js_sys::{Array, Uint8Array};
 use seed::{prelude::*, *};
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{self, Blob, BlobPropertyBag, DragEvent, Event, File};
+use web_sys::{self, Blob, BlobPropertyBag, File};
 
 use webpixels::{pixelmosh, Options};
 
