@@ -27,6 +27,7 @@ enum Msg {
     Download,
     FileChanged(Option<File>),
     PixelMosh(JsValue),
+    ReMosh,
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -49,7 +50,6 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             let bytes: Vec<u8> = array.to_vec();
             model.storage = bytes;
             model.storage_active = true;
-            log!("IMAGE LOADED");
 
             let new_array = Uint8Array::new(
                 &unsafe {
@@ -76,17 +76,31 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             model.options.set_seed(Options::default().seed());
             model.pixelmosh_active = true;
         }
-    }
-}
+        Msg::ReMosh => {
+            let new_array = Uint8Array::new(
+                &unsafe {
+                    Uint8Array::view(
+                        &pixelmosh(&model.storage, &model.options).expect("PIXELMOSH failed"),
+                    )
+                }
+                .into(),
+            );
 
-trait IntoDragEvent {
-    fn into_drag_event(self) -> DragEvent;
-}
+            let array = Array::new();
+            array.push(&new_array.buffer());
 
-impl IntoDragEvent for Event {
-    fn into_drag_event(self) -> DragEvent {
-        self.dyn_into::<web_sys::DragEvent>()
-            .expect("cannot cast given event into DragEvent")
+            let image = JsValue::from(array);
+            let blob = Blob::new_with_u8_array_sequence_and_options(
+                &image,
+                BlobPropertyBag::new().type_("image/png"),
+            )
+            .unwrap();
+
+            let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
+            model.image_view = url;
+            log!(model.options.seed());
+            model.options.set_seed(Options::default().seed());
+        }
     }
 }
 
@@ -143,6 +157,13 @@ fn view(model: &Model) -> Node<Msg> {
                     St::AlignItems => "center",
                 ],
                 div![
+                    IF!(model.pixelmosh_active => button![
+                        "MOSH",
+                        ev(Ev::Click, |_| Msg::ReMosh),
+                        style![
+                            St::Padding => "4px",
+                        ],
+                    ]),
                     IF!(model.pixelmosh_active => button![
                         "DOWNLOAD",
                         ev(Ev::Click, |_| Msg::Download),
