@@ -348,7 +348,7 @@ fn view(model: &Model) -> Node<Msg> {
                 ]
             } else {
                 div![
-                    "WAITING FOR PNG FILE",
+                    "INSERT PNG FILE",
                     style![
                         St::Display => "flex",
                         St::FlexDirection => "column",
