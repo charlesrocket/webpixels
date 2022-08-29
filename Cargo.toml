@@ -6,4 +6,4 @@ members = [
 
 [profile.release.package.pixelmosh-w3]
 codegen-units = 1
-opt-level = 's'
+opt-level = 'z'
