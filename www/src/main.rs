@@ -324,7 +324,7 @@ fn view(model: &Model) -> Node<Msg> {
                                 St::FontFamily => "monospace",
                                 St::FontSize => "x-small",
                                 St::Padding => "5px",
-                                St::Margin => "5px",
+                                St::Margin => "10px",
                                 St::Border => [&px(3), "dashed", "black"].join(" "),
                             ],
                         ]
