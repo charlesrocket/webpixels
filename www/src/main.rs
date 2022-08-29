@@ -354,10 +354,9 @@ fn view(model: &Model) -> Node<Msg> {
                         St::FlexDirection => "column",
                         St::AlignItems => "center",
                         St::Margin => "11px",
-                        St::Padding => "3px",
+                        St::Padding => "4px",
                         St::FontFamily => "monospace",
                         St::FontSize => "medium",
-                        St::Border => [&px(3), "dashed", "black"].join(" "),
                     ]
                 ]
             }
