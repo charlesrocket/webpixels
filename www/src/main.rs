@@ -340,7 +340,7 @@ fn view(model: &Model) -> Node<Msg> {
                             ],
                             style![
                                     St::Border => [&px(3), "dashed", "black"].join(" "),
-                                    St::Margin => "5px",
+                                    St::Margin => "10px",
                                     St::Padding => "4px",
                             ]
                         ]
