@@ -194,7 +194,7 @@ fn view(model: &Model) -> Node<Msg> {
             St::Display => "flex",
             St::FlexDirection => "column",
             St::JustifyContent => "center",
-            St::MinHeight => "100vh",
+            St::MinHeight => "95vh",
         ],
         div![
             input![
