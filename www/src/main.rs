@@ -373,10 +373,10 @@ fn view(model: &Model) -> Node<Msg> {
     ]
 }
 
-fn trim_float_to_str(input: f64) -> String {
-    let s1 = input;
+fn trim_float_to_str(float: f64) -> String {
+    let s1 = float;
     if s1 != 1.0 && s1 != 0.0 {
-        let s2 = input.to_string();
+        let s2 = float.to_string();
         s2[..3].to_string()
     } else {
         s1.to_string()
