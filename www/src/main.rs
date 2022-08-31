@@ -25,11 +25,11 @@ struct Model {
 
 enum Msg {
     ControlsRequested,
+    ConvertArray(Vec<u8>),
     Download,
     FileChanged(Option<File>),
     FileStore(JsValue),
     FileView(Uint8Array),
-    Parse(Vec<u8>),
     PixelMosh,
     Reload,
     // Options
@@ -54,6 +54,10 @@ enum Msg {
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::ControlsRequested => model.controls = true,
+        Msg::ConvertArray(input) => {
+            let array = Uint8Array::new(&unsafe { Uint8Array::view(&input) }.into());
+            orders.send_msg(Msg::FileView(array));
+        }
         Msg::Download => {
             let window = web_sys::window().unwrap();
             window.open_with_url(&model.image_view).unwrap();
@@ -93,14 +97,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
             model.image_view = url;
         }
-        Msg::Parse(input) => {
-            let mosh_array = Uint8Array::new(&unsafe { Uint8Array::view(&input) }.into());
-            orders.send_msg(Msg::FileView(mosh_array));
-        }
         Msg::PixelMosh => {
             log!(model.options.seed());
             match pixelmosh(&model.storage, &model.options) {
-                Ok(moshed) => orders.send_msg(Msg::Parse(moshed)),
+                Ok(moshed) => orders.send_msg(Msg::ConvertArray(moshed)),
                 Err(_) => orders.send_msg(Msg::Reload),
             };
 
