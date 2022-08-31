@@ -25,7 +25,7 @@ struct Model {
 
 enum Msg {
     ControlsRequested,
-    ConvertArray(Vec<u8>),
+    Convert(Vec<u8>),
     Download,
     FileChanged(Option<File>),
     FileStore(JsValue),
@@ -54,7 +54,7 @@ enum Msg {
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::ControlsRequested => model.controls = true,
-        Msg::ConvertArray(input) => {
+        Msg::Convert(input) => {
             let array = Uint8Array::new(&unsafe { Uint8Array::view(&input) }.into());
             orders.send_msg(Msg::FileView(array));
         }
@@ -100,7 +100,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::PixelMosh => {
             log!(model.options.seed());
             match pixelmosh(&model.storage, &model.options) {
-                Ok(moshed) => orders.send_msg(Msg::ConvertArray(moshed)),
+                Ok(moshed) => orders.send_msg(Msg::Convert(moshed)),
                 Err(_) => orders.send_msg(Msg::Reload),
             };
 
