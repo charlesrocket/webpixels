@@ -29,7 +29,9 @@ enum Msg {
     FileChanged(Option<File>),
     FileStore(JsValue),
     FileView(Uint8Array),
+    Parse(Vec<u8>),
     PixelMosh,
+    Reload,
     // Options
     DecMinRate,
     IncMinRate,
@@ -91,20 +93,19 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
             model.image_view = url;
         }
+        Msg::Parse(input) => {
+            let mosh_array = Uint8Array::new(&unsafe { Uint8Array::view(&input) }.into());
+            orders.send_msg(Msg::FileView(mosh_array));
+        }
         Msg::PixelMosh => {
             log!(model.options.seed());
-            let mosh_array = Uint8Array::new(
-                &unsafe {
-                    Uint8Array::view(
-                        &pixelmosh(&model.storage, &model.options).expect("PIXELMOSH failed"),
-                    )
-                }
-                .into(),
-            );
-
-            orders.send_msg(Msg::FileView(mosh_array));
+            match pixelmosh(&model.storage, &model.options) {
+                Ok(moshed) => orders.send_msg(Msg::Parse(moshed)),
+                Err(_) => orders.send_msg(Msg::Reload),
+            };
             model.options.set_seed(Options::default().seed());
         }
+        Msg::Reload => { log!["ERROR! RESTARTING..."]; Url::reload() }
         Msg::DecMinRate => {
             let value = model.options.min_rate() - 1;
             model.options.set_min_rate(value.clamp(1, 100));
