@@ -107,7 +107,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         }
         Msg::Reload => {
             log!["ERROR! RESTARTING..."];
-            Url::reload()
+            Url::reload();
         }
         Msg::DecMinRate => {
             let value = model.options.min_rate() - 1;
