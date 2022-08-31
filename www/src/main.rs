@@ -81,6 +81,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             model.storage = bytes;
             model.storage_active = true;
 
+            log!["FILE LOADED"];
             orders.send_msg(Msg::PixelMosh);
         }
         Msg::FileView(file) => {
