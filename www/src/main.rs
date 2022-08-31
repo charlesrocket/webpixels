@@ -105,7 +105,10 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             };
             model.options.set_seed(Options::default().seed());
         }
-        Msg::Reload => { log!["ERROR! RESTARTING..."]; Url::reload() }
+        Msg::Reload => {
+            log!["ERROR! RESTARTING..."];
+            Url::reload()
+        }
         Msg::DecMinRate => {
             let value = model.options.min_rate() - 1;
             model.options.set_min_rate(value.clamp(1, 100));
