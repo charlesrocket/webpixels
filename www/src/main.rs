@@ -103,6 +103,8 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
                 Ok(moshed) => orders.send_msg(Msg::Parse(moshed)),
                 Err(_) => orders.send_msg(Msg::Reload),
             };
+
+            log!["PIXELMOSH: DONE"];
             model.options.set_seed(Options::default().seed());
         }
         Msg::Reload => {
