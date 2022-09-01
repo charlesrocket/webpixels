@@ -1,5 +1,5 @@
 use js_sys::{Array, Uint8Array};
-use seed::{prelude::*, *};
+use seed::{attrs, button, div, img, input, log, prelude::*, style, wasm_bindgen_futures};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{self, Blob, BlobPropertyBag, File};
 
