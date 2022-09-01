@@ -296,7 +296,7 @@ fn view(model: &Model) -> Node<Msg> {
                                 button![ev(Ev::Click, |_| Msg::IncPixelation), "+"],
                                 div![
                                     "Line shift: ",
-                                    trim_float_to_str(model.options.line_shift())
+                                    float_to_str_trim(model.options.line_shift())
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecLineShift), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncLineShift), "+"],
@@ -305,10 +305,10 @@ fn view(model: &Model) -> Node<Msg> {
                                 ],
                             ],
                             div![
-                                div!["Reverse: ", trim_float_to_str(model.options.reverse())],
+                                div!["Reverse: ", float_to_str_trim(model.options.reverse())],
                                 button![ev(Ev::Click, |_| Msg::DecReverse), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncReverse), "+"],
-                                div!["Flip: ", trim_float_to_str(model.options.flip())],
+                                div!["Flip: ", float_to_str_trim(model.options.flip())],
                                 button![ev(Ev::Click, |_| Msg::DecFlip), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncFlip), "+"],
                                 style![
@@ -318,13 +318,13 @@ fn view(model: &Model) -> Node<Msg> {
                             div![
                                 div![
                                     "Channel Swap: ",
-                                    trim_float_to_str(model.options.channel_swap())
+                                    float_to_str_trim(model.options.channel_swap())
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecChannelSwap), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncChannelSwap), "+"],
                                 div![
                                     "Channel Shift: ",
-                                    trim_float_to_str(model.options.channel_shift())
+                                    float_to_str_trim(model.options.channel_shift())
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecChannelShift), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncChannelShift), "+"],
@@ -380,16 +380,15 @@ fn view(model: &Model) -> Node<Msg> {
     ]
 }
 
-fn trim_float_to_str(float: f64) -> String {
-    let s1 = float;
-    if s1 != 1.0 && s1 != 0.0 {
-        let s2 = float.to_string();
-        s2[..3].to_string()
-    } else {
-        s1.to_string()
-    }
-}
-
 pub fn main() {
     App::start("Pixelmosh", init, update, view);
+}
+
+fn float_to_str_trim(float: f64) -> String {
+    if float != 1.0 && float != 0.0 {
+        let str = float.to_string();
+        str[..3].to_string()
+    } else {
+        float.to_string()
+    }
 }
