@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-use libmosh::{mosh, Options as MoshOptions};
+use libmosh::{mosh, MoshOptions};
 
 pub mod utils;
 
@@ -26,23 +26,23 @@ impl Options {
     }
 
     pub fn line_shift(&self) -> f64 {
-        self.0.line_shift_rng
+        self.0.line_shift
     }
 
     pub fn reverse(&self) -> f64 {
-        self.0.reverse_rng
+        self.0.reverse
     }
 
     pub fn flip(&self) -> f64 {
-        self.0.flip_rng
+        self.0.flip
     }
 
     pub fn channel_swap(&self) -> f64 {
-        self.0.channel_swap_rng
+        self.0.channel_swap
     }
 
     pub fn channel_shift(&self) -> f64 {
-        self.0.channel_shift_rng
+        self.0.channel_shift
     }
 
     pub fn seed(&self) -> u64 {
@@ -62,23 +62,23 @@ impl Options {
     }
 
     pub fn set_line_shift(&mut self, value: f64) {
-        self.0.line_shift_rng = value;
+        self.0.line_shift = value;
     }
 
     pub fn set_reverse(&mut self, value: f64) {
-        self.0.reverse_rng = value;
+        self.0.reverse = value;
     }
 
     pub fn set_flip(&mut self, value: f64) {
-        self.0.flip_rng = value;
+        self.0.flip = value;
     }
 
     pub fn set_channel_swap(&mut self, value: f64) {
-        self.0.channel_swap_rng = value;
+        self.0.channel_swap = value;
     }
 
     pub fn set_channel_shift(&mut self, value: f64) {
-        self.0.channel_shift_rng = value;
+        self.0.channel_shift = value;
     }
 
     pub fn set_seed(&mut self, value: u64) {
