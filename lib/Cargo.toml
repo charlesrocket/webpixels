@@ -2,6 +2,7 @@
 name = "webpixels"
 version = "0.3.0"
 authors = ["charlesrocket"]
+repository = "https://github.com/charlesrocket/webpixels"
 edition = "2021"
 categories = ["multimedia::images", "wasm"]
 license = "Apache-2.0/MIT"
