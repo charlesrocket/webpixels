@@ -283,14 +283,14 @@ fn view(model: &Model) -> Node<Msg> {
                                 div![
                                     "Min rate: ",
                                     model.options.min_rate().to_string(),
-                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                    style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecMinRate), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncMinRate), "+"],
                                 div![
                                     "Max rate: ",
                                     model.options.max_rate().to_string(),
-                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                    style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecMaxRate), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncMaxRate), "+"],
@@ -302,14 +302,14 @@ fn view(model: &Model) -> Node<Msg> {
                                 div![
                                     "Pixelation: ",
                                     model.options.pixelation().to_string(),
-                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                    style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecPixelation), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncPixelation), "+"],
                                 div![
                                     "Line shift: ",
                                     float_to_str_trim(model.options.line_shift()),
-                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                    style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecLineShift), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncLineShift), "+"],
@@ -321,14 +321,14 @@ fn view(model: &Model) -> Node<Msg> {
                                 div![
                                     "Reverse: ",
                                     float_to_str_trim(model.options.reverse()),
-                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                    style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecReverse), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncReverse), "+"],
                                 div![
                                     "Flip: ",
                                     float_to_str_trim(model.options.flip()),
-                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                    style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecFlip), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncFlip), "+"],
@@ -340,14 +340,14 @@ fn view(model: &Model) -> Node<Msg> {
                                 div![
                                     "Channel Swap: ",
                                     float_to_str_trim(model.options.channel_swap()),
-                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                    style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecChannelSwap), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncChannelSwap), "+"],
                                 div![
                                     "Channel Shift: ",
                                     float_to_str_trim(model.options.channel_shift()),
-                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                    style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecChannelShift), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncChannelShift), "+"],
