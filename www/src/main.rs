@@ -280,10 +280,18 @@ fn view(model: &Model) -> Node<Msg> {
                     if model.controls {
                         div![
                             div![
-                                div!["Min rate: ", model.options.min_rate().to_string()],
+                                div![
+                                    "Min rate: ",
+                                    model.options.min_rate().to_string(),
+                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                ],
                                 button![ev(Ev::Click, |_| Msg::DecMinRate), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncMinRate), "+"],
-                                div!["Max rate: ", model.options.max_rate().to_string()],
+                                div![
+                                    "Max rate: ",
+                                    model.options.max_rate().to_string(),
+                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                ],
                                 button![ev(Ev::Click, |_| Msg::DecMaxRate), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncMaxRate), "+"],
                                 style![
@@ -291,12 +299,17 @@ fn view(model: &Model) -> Node<Msg> {
                                 ],
                             ],
                             div![
-                                div!["Pixelation: ", model.options.pixelation().to_string()],
+                                div![
+                                    "Pixelation: ",
+                                    model.options.pixelation().to_string(),
+                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                ],
                                 button![ev(Ev::Click, |_| Msg::DecPixelation), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncPixelation), "+"],
                                 div![
                                     "Line shift: ",
-                                    float_to_str_trim(model.options.line_shift())
+                                    float_to_str_trim(model.options.line_shift()),
+                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecLineShift), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncLineShift), "+"],
@@ -305,10 +318,18 @@ fn view(model: &Model) -> Node<Msg> {
                                 ],
                             ],
                             div![
-                                div!["Reverse: ", float_to_str_trim(model.options.reverse())],
+                                div![
+                                    "Reverse: ",
+                                    float_to_str_trim(model.options.reverse()),
+                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                ],
                                 button![ev(Ev::Click, |_| Msg::DecReverse), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncReverse), "+"],
-                                div!["Flip: ", float_to_str_trim(model.options.flip())],
+                                div![
+                                    "Flip: ",
+                                    float_to_str_trim(model.options.flip()),
+                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
+                                ],
                                 button![ev(Ev::Click, |_| Msg::DecFlip), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncFlip), "+"],
                                 style![
@@ -318,13 +339,15 @@ fn view(model: &Model) -> Node<Msg> {
                             div![
                                 div![
                                     "Channel Swap: ",
-                                    float_to_str_trim(model.options.channel_swap())
+                                    float_to_str_trim(model.options.channel_swap()),
+                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecChannelSwap), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncChannelSwap), "+"],
                                 div![
                                     "Channel Shift: ",
-                                    float_to_str_trim(model.options.channel_shift())
+                                    float_to_str_trim(model.options.channel_shift()),
+                                    style![St::MarginTop => "4px",St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecChannelShift), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncChannelShift), "+"],
@@ -339,7 +362,7 @@ fn view(model: &Model) -> Node<Msg> {
                                 St::TextAlign => "center",
                                 St::FontFamily => "monospace",
                                 St::FontSize => "x-small",
-                                St::Padding => "5px",
+                                St::Padding => "4px",
                                 St::Margin => "10px",
                                 St::Border => [&px(3), "dashed", "black"].join(" "),
                             ],
