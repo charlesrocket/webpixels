@@ -86,6 +86,10 @@ impl Options {
     }
 }
 
+/// Processes provided image data
+///
+/// # Errors
+/// TODO
 #[wasm_bindgen]
 pub fn pixelmosh(image: &[u8], options: &Options) -> Result<Vec<u8>, JsValue> {
     let decoder = png::Decoder::new(image);
