@@ -5,7 +5,7 @@ use wasm_bindgen_test::*;
 
 use webpixels::{pixelmosh, Options};
 
-pub mod files;
+pub mod images;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
