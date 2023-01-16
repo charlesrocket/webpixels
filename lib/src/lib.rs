@@ -9,10 +9,6 @@ pub struct Options(MoshOptions);
 
 #[wasm_bindgen]
 impl Options {
-    pub fn default() -> Self {
-        Self(MoshOptions::default())
-    }
-
     pub fn min_rate(&self) -> u16 {
         self.0.min_rate
     }
@@ -83,6 +79,12 @@ impl Options {
 
     pub fn set_seed(&mut self, value: u64) {
         self.0.seed = value;
+    }
+}
+
+impl Default for Options {
+    fn default() -> Self {
+        Self(MoshOptions::default())
     }
 }
 
