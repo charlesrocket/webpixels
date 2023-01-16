@@ -5,6 +5,7 @@ use libmosh::{MoshData, MoshOptions};
 pub mod utils;
 
 #[wasm_bindgen]
+#[derive(Default)]
 pub struct Options(MoshOptions);
 
 #[wasm_bindgen]
@@ -79,12 +80,6 @@ impl Options {
 
     pub fn set_seed(&mut self, value: u64) {
         self.0.seed = value;
-    }
-}
-
-impl Default for Options {
-    fn default() -> Self {
-        Self(MoshOptions::default())
     }
 }
 
