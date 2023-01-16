@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-use libmosh::{mosh, MoshOptions};
+use libmosh::{MoshData, MoshOptions};
 
 pub mod utils;
 
@@ -92,31 +92,25 @@ impl Options {
 /// TODO
 #[wasm_bindgen]
 pub fn pixelmosh(image: &[u8], options: &Options) -> Result<Vec<u8>, JsValue> {
-    let decoder = png::Decoder::new(image);
+    let mut input = MoshData::new(image).map_err(|error| JsValue::from(error.to_string()))?;
     let mut output: Vec<u8> = Vec::new();
-    let mut reader = decoder
-        .read_info()
-        .map_err(|error| JsValue::from(error.to_string()))?;
 
-    let mut buf = vec![0; reader.output_buffer_size()];
-    let info = reader
-        .next_frame(&mut buf)
+    input
+        .mosh(&options.0)
         .map_err(|error| JsValue::from(error.to_string()))?;
-
-    mosh(&info, &mut buf, &options.0).map_err(|error| JsValue::from(error.to_string()))?;
 
     {
-        let mut encoder = png::Encoder::new(&mut output, info.width, info.height);
+        let mut encoder = png::Encoder::new(&mut output, input.width, input.height);
 
-        encoder.set_color(info.color_type);
-        encoder.set_depth(info.bit_depth);
+        encoder.set_color(input.color_type);
+        encoder.set_depth(input.bit_depth);
 
         let mut writer = encoder
             .write_header()
             .map_err(|error| JsValue::from(error.to_string()))?;
 
         writer
-            .write_image_data(&buf)
+            .write_image_data(&input.buf)
             .map_err(|error| JsValue::from(error.to_string()))?;
     }
 
