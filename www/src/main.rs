@@ -3,13 +3,13 @@ use seed::{attrs, button, div, img, input, log, prelude::*, style, wasm_bindgen_
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{self, Blob, BlobPropertyBag, File};
 
-use webpixels::{pixelmosh, Options};
+use webpixels::Core;
 
 fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
     Model {
         controls: false,
         image_view: "".to_string(),
-        options: Options::default(),
+        core: Core::default(),
         storage: vec![0, 0],
         storage_active: false,
     }
@@ -18,7 +18,7 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 struct Model {
     controls: bool,
     image_view: String,
-    options: Options,
+    core: Core,
     storage: Vec<u8>,
     storage_active: bool,
 }
@@ -99,98 +99,98 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             model.image_view = url;
         }
         Msg::PixelMosh => {
-            log!(model.options.seed());
-            match pixelmosh(&model.storage, &model.options) {
+            log!(model.core.seed());
+            match model.core.pixelmosh(&model.storage) {
                 Ok(moshed) => orders.send_msg(Msg::Convert(moshed)),
                 Err(_) => orders.send_msg(Msg::Reload),
             };
 
             log!["PIXELMOSH: DONE"];
-            model.options.set_seed(Options::default().seed());
+            model.core.new_seed();
         }
         Msg::Reload => {
             log!["ERROR! RESTARTING..."];
             Url::reload();
         }
         Msg::DecMinRate => {
-            let value = model.options.min_rate() - 1;
-            model.options.set_min_rate(value.clamp(1, 100));
-            log!(model.options.min_rate());
+            let value = model.core.min_rate() - 1;
+            model.core.set_min_rate(value.clamp(1, 100));
+            log!(model.core.min_rate());
         }
         Msg::IncMinRate => {
-            let value = model.options.min_rate() + 1;
-            model.options.set_min_rate(value.clamp(1, 100));
-            log!(model.options.min_rate());
+            let value = model.core.min_rate() + 1;
+            model.core.set_min_rate(value.clamp(1, 100));
+            log!(model.core.min_rate());
         }
         Msg::DecMaxRate => {
-            let value = model.options.max_rate() - 1;
-            model.options.set_max_rate(value.clamp(1, 100));
-            log!(model.options.max_rate());
+            let value = model.core.max_rate() - 1;
+            model.core.set_max_rate(value.clamp(1, 100));
+            log!(model.core.max_rate());
         }
         Msg::IncMaxRate => {
-            let value = model.options.max_rate() + 1;
-            model.options.set_max_rate(value.clamp(1, 100));
-            log!(model.options.max_rate());
+            let value = model.core.max_rate() + 1;
+            model.core.set_max_rate(value.clamp(1, 100));
+            log!(model.core.max_rate());
         }
         Msg::DecPixelation => {
-            let value = model.options.pixelation() - 1;
-            model.options.set_pixelation(value.clamp(1, 255));
-            log!(model.options.pixelation());
+            let value = model.core.pixelation() - 1;
+            model.core.set_pixelation(value.clamp(1, 255));
+            log!(model.core.pixelation());
         }
         Msg::IncPixelation => {
-            let value = model.options.pixelation() + 1;
-            model.options.set_pixelation(value.clamp(1, 255));
-            log!(model.options.pixelation());
+            let value = model.core.pixelation() + 1;
+            model.core.set_pixelation(value.clamp(1, 255));
+            log!(model.core.pixelation());
         }
         Msg::DecLineShift => {
-            let value = model.options.line_shift() - 0.1;
-            model.options.set_line_shift(value.clamp(0.0, 1.0));
-            log!(model.options.line_shift());
+            let value = model.core.line_shift() - 0.1;
+            model.core.set_line_shift(value.clamp(0.0, 1.0));
+            log!(model.core.line_shift());
         }
         Msg::IncLineShift => {
-            let value = model.options.line_shift() + 0.1;
-            model.options.set_line_shift(value.clamp(0.0, 1.0));
-            log!(model.options.line_shift());
+            let value = model.core.line_shift() + 0.1;
+            model.core.set_line_shift(value.clamp(0.0, 1.0));
+            log!(model.core.line_shift());
         }
         Msg::DecReverse => {
-            let value = model.options.reverse() - 0.1;
-            model.options.set_reverse(value.clamp(0.0, 1.0));
-            log!(model.options.reverse());
+            let value = model.core.reverse() - 0.1;
+            model.core.set_reverse(value.clamp(0.0, 1.0));
+            log!(model.core.reverse());
         }
         Msg::IncReverse => {
-            let value = model.options.reverse() + 0.1;
-            model.options.set_reverse(value.clamp(0.0, 1.0));
-            log!(model.options.reverse());
+            let value = model.core.reverse() + 0.1;
+            model.core.set_reverse(value.clamp(0.0, 1.0));
+            log!(model.core.reverse());
         }
         Msg::DecFlip => {
-            let value = model.options.flip() - 0.1;
-            model.options.set_flip(value.clamp(0.0, 1.0));
-            log!(model.options.flip());
+            let value = model.core.flip() - 0.1;
+            model.core.set_flip(value.clamp(0.0, 1.0));
+            log!(model.core.flip());
         }
         Msg::IncFlip => {
-            let value = model.options.flip() + 0.1;
-            model.options.set_flip(value.clamp(0.0, 1.0));
-            log!(model.options.flip());
+            let value = model.core.flip() + 0.1;
+            model.core.set_flip(value.clamp(0.0, 1.0));
+            log!(model.core.flip());
         }
         Msg::DecChannelSwap => {
-            let value = model.options.channel_swap() - 0.1;
-            model.options.set_channel_swap(value.clamp(0.0, 1.0));
-            log!(model.options.channel_swap());
+            let value = model.core.channel_swap() - 0.1;
+            model.core.set_channel_swap(value.clamp(0.0, 1.0));
+            log!(model.core.channel_swap());
         }
         Msg::IncChannelSwap => {
-            let value = model.options.channel_swap() + 0.1;
-            model.options.set_channel_swap(value.clamp(0.0, 1.0));
-            log!(model.options.channel_swap());
+            let value = model.core.channel_swap() + 0.1;
+            model.core.set_channel_swap(value.clamp(0.0, 1.0));
+            log!(model.core.channel_swap());
         }
         Msg::DecChannelShift => {
-            let value = model.options.channel_shift() - 0.1;
-            model.options.set_channel_shift(value.clamp(0.0, 1.0));
-            log!(model.options.channel_shift());
+            let value = model.core.channel_shift() - 0.1;
+            model.core.set_channel_shift(value.clamp(0.0, 1.0));
+            log!(model.core.channel_shift());
         }
         Msg::IncChannelShift => {
-            let value = model.options.channel_shift() + 0.1;
-            model.options.set_channel_shift(value.clamp(0.0, 1.0));
-            log!(model.options.channel_shift());
+            let value = model.core.channel_shift() + 0.1;
+            model.core.set_channel_shift(value.clamp(0.0, 1.0));
+            log!(model.core.channel_shift());
         }
     }
 }
@@ -283,14 +283,14 @@ fn view(model: &Model) -> Node<Msg> {
                             div![
                                 div![
                                     "Min rate: ",
-                                    model.options.min_rate().to_string(),
+                                    model.core.min_rate().to_string(),
                                     style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecMinRate), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncMinRate), "+"],
                                 div![
                                     "Max rate: ",
-                                    model.options.max_rate().to_string(),
+                                    model.core.max_rate().to_string(),
                                     style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecMaxRate), "-"],
@@ -302,14 +302,14 @@ fn view(model: &Model) -> Node<Msg> {
                             div![
                                 div![
                                     "Pixelation: ",
-                                    model.options.pixelation().to_string(),
+                                    model.core.pixelation().to_string(),
                                     style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecPixelation), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncPixelation), "+"],
                                 div![
                                     "Line shift: ",
-                                    float_to_str_trim(model.options.line_shift()),
+                                    float_to_str_trim(model.core.line_shift()),
                                     style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecLineShift), "-"],
@@ -321,14 +321,14 @@ fn view(model: &Model) -> Node<Msg> {
                             div![
                                 div![
                                     "Reverse: ",
-                                    float_to_str_trim(model.options.reverse()),
+                                    float_to_str_trim(model.core.reverse()),
                                     style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecReverse), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncReverse), "+"],
                                 div![
                                     "Flip: ",
-                                    float_to_str_trim(model.options.flip()),
+                                    float_to_str_trim(model.core.flip()),
                                     style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecFlip), "-"],
@@ -340,14 +340,14 @@ fn view(model: &Model) -> Node<Msg> {
                             div![
                                 div![
                                     "Channel Swap: ",
-                                    float_to_str_trim(model.options.channel_swap()),
+                                    float_to_str_trim(model.core.channel_swap()),
                                     style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecChannelSwap), "-"],
                                 button![ev(Ev::Click, |_| Msg::IncChannelSwap), "+"],
                                 div![
                                     "Channel Shift: ",
-                                    float_to_str_trim(model.options.channel_shift()),
+                                    float_to_str_trim(model.core.channel_shift()),
                                     style![St::MarginTop => "4px", St::MarginBottom => "4px"]
                                 ],
                                 button![ev(Ev::Click, |_| Msg::DecChannelShift), "-"],
