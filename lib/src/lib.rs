@@ -91,7 +91,7 @@ impl Core {
         let mut output: Vec<u8> = Vec::new();
 
         self.0
-            .read_image(&image)
+            .read_image(image)
             .map_err(|error| JsValue::from(error.to_string()))?;
 
         self.0
