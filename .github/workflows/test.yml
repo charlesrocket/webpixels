@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: swatinem/rust-cache@v1
+      - uses: swatinem/rust-cache@v2
       - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: cargo fmt --check
       - run: wasm-pack test --headless --chrome --firefox
@@ -61,7 +61,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - uses: swatinem/rust-cache@v1
+      - uses: swatinem/rust-cache@v2
       - run: rustup target add wasm32-unknown-unknown
       - name: Install dependencies
         uses: actions-rs/cargo@v1
