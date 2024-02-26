@@ -14,7 +14,7 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: swatinem/rust-cache@v1
       - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: cargo fmt --check
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "!startsWith(github.ref, 'refs/tags/')"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup component add clippy
       - run: cargo clippy --all-features -- -D clippy::all -D warnings
 
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Rust Setup
         uses: actions-rs/toolchain@v1
         with:
