@@ -1,5 +1,6 @@
+use gloo_console::log;
 use js_sys::{Array, Uint8Array};
-use seed::{attrs, button, div, img, input, log, prelude::*, style, wasm_bindgen_futures};
+use seed::{attrs, button, div, img, input, prelude::*, style, wasm_bindgen_futures};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{self, Blob, BlobPropertyBag, File};
 
