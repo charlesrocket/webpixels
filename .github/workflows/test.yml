@@ -61,7 +61,7 @@ jobs:
         with:
           version: 'latest'
       - name: Build
-        run: trunk build --release --public-url webpixels
+        run: trunk build --release --public-url https://charlesrocket.github.io/webpixels/
         working-directory: ./www
       - name: Setup Pages
         uses: actions/configure-pages@v4
