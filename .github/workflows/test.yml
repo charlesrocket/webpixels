@@ -56,11 +56,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: swatinem/rust-cache@v2
       - run: rustup target add wasm32-unknown-unknown
-      - name: Install dependencies
-        uses: actions-rs/cargo@v1
+      - name: Install trunk
+        uses: jetli/trunk-action@v0.5.0
         with:
-          command: install
-          args: trunk
+          version: 'latest'
       - name: Build
         run: trunk build --release --public-url webpixels
         working-directory: ./www
