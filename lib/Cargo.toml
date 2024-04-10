@@ -6,7 +6,7 @@ repository = "https://github.com/charlesrocket/webpixels"
 edition = "2021"
 categories = ["multimedia::images", "wasm"]
 keywords = ["glitch"]
-license = "Apache-2.0/MIT"
+license = "Apache-2.0 OR MIT"
 description = "Libmosh for WebAssembly"
 
 [lib]
