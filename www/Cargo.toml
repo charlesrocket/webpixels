@@ -3,7 +3,7 @@ publish = false
 name = "pixelmosh-w3"
 version = "0.1.0-alpha"
 authors = ["charlesrocket"]
-edition = "2021"
+edition = "2024"
 categories = ["wasm"]
 
 [dependencies]
