@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup component add clippy
-      - run: cargo clippy --all-features -- -D clippy::all -D warnings
+      - run: cargo clippy --target wasm32-unknown-unknown --all-features -- -D clippy::all -D warnings
 
   publish:
     needs: cargo
@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo publish -p webpixels --token ${CRATES_TOKEN}
+      - run: cargo publish --target wasm32-unknown-unknown -p webpixels --token ${CRATES_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
 
