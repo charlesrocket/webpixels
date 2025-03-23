@@ -114,7 +114,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             Url::reload();
         }
         Msg::Ansi => {
-            let value = if model.core.ansi() { false } else { true };
+            let value = !model.core.ansi();
             model.core.set_ansi(value);
             log!(model.core.ansi());
         }
