@@ -273,6 +273,7 @@ fn view(model: &Model) -> Node<Msg> {
                             ev(Ev::Click, |_| Msg::Ansi),
                             style![
                                 St::Padding => "4px",
+                                St::Color => if model.core.ansi() {"white"} else {"black"},
                                 St::BackgroundColor => if model.core.ansi() {"green"} else {"gray"},
                             ],
                         ],
