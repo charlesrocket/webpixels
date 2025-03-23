@@ -1,7 +1,7 @@
 use png::{BitDepth, ColorType};
 use wasm_bindgen::prelude::*;
 
-use libmosh::{generate_palette, MoshCore};
+use libmosh::{MoshCore, generate_palette};
 
 pub mod utils;
 
