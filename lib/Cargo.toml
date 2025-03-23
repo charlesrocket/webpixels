@@ -20,6 +20,7 @@ console_error_panic_hook = { version = "0.1", optional = true }
 getrandom = { version = "0.3", features = ["wasm_js"] }
 pixelmosh = { version = "4.1", default-features = false }
 png = "0.17"
+uuid = { version = "1.16", features = ["rng-getrandom"] }
 wasm-bindgen = "0.2"
 
 [dev-dependencies]
