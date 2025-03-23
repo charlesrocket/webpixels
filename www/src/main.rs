@@ -34,6 +34,7 @@ enum Msg {
     PixelMosh,
     Reload,
     // Options
+    Ansi,
     DecMinRate,
     IncMinRate,
     DecMaxRate,
@@ -112,6 +113,11 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::Reload => {
             log!["ERROR! RESTARTING..."];
             Url::reload();
+        }
+        Msg::Ansi => {
+            let value = if model.core.ansi() { false } else { true };
+            model.core.set_ansi(value);
+            log!(model.core.ansi());
         }
         Msg::DecMinRate => {
             let value = model.core.min_rate() - 1;
@@ -261,6 +267,14 @@ fn view(model: &Model) -> Node<Msg> {
                             ev(Ev::Click, |_| Msg::PixelMosh),
                             style![
                                 St::Padding => "4px",
+                            ],
+                        ],
+                        button![
+                            "ANSI",
+                            ev(Ev::Click, |_| Msg::Ansi),
+                            style![
+                                St::Padding => "4px",
+                                St::BackgroundColor => if model.core.ansi() {"green"} else {"gray"},
                             ],
                         ],
                         button![
