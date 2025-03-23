@@ -1,6 +1,7 @@
+use png::{BitDepth, ColorType};
 use wasm_bindgen::prelude::*;
 
-use libmosh::MoshCore;
+use libmosh::{generate_palette, MoshCore};
 
 pub mod utils;
 
@@ -10,6 +11,9 @@ pub struct Core(MoshCore);
 
 #[wasm_bindgen]
 impl Core {
+    pub fn ansi(&self) -> bool {
+        self.0.options.ansi
+    }
     pub fn min_rate(&self) -> u16 {
         self.0.options.min_rate
     }
@@ -44,6 +48,10 @@ impl Core {
 
     pub fn seed(&self) -> u64 {
         self.0.options.seed
+    }
+
+    pub fn set_ansi(&mut self, value: bool) {
+        self.0.options.ansi = value;
     }
 
     pub fn set_min_rate(&mut self, value: u16) {
@@ -101,8 +109,21 @@ impl Core {
         {
             let mut encoder = png::Encoder::new(&mut output, self.0.data.width, self.0.data.height);
 
-            encoder.set_color(self.0.data.color_type);
-            encoder.set_depth(self.0.data.bit_depth);
+            encoder.set_color(if self.0.options.ansi {
+                ColorType::Indexed
+            } else {
+                self.0.data.color_type
+            });
+
+            encoder.set_depth(if self.0.options.ansi {
+                BitDepth::Eight
+            } else {
+                self.0.data.bit_depth
+            });
+
+            if self.0.options.ansi {
+                encoder.set_palette(crate::generate_palette());
+            };
 
             let mut writer = encoder
                 .write_header()
