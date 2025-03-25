@@ -1,4 +1,7 @@
 Cargo.lock
+
+**.wasm
+
 /target
 /**/dist
 /**/pkg
