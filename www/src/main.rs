@@ -377,7 +377,7 @@ fn view(model: &Model) -> Node<Msg> {
                                 St::AlignItems => "center",
                                 St::TextAlign => "center",
                                 St::FontFamily => "monospace",
-                                St::FontSize => "x-small",
+                                St::FontSize => "small",
                                 St::Padding => "4px",
                                 St::Margin => "10px",
                                 St::Border => [&px(3), "dashed", "black"].join(" "),
