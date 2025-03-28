@@ -122,7 +122,7 @@ impl Core {
             });
 
             if self.0.options.ansi {
-                encoder.set_palette(crate::generate_palette());
+                encoder.set_palette(generate_palette());
             };
 
             let mut writer = encoder
