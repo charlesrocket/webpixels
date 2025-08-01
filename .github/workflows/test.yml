@@ -60,7 +60,7 @@ jobs:
       - uses: swatinem/rust-cache@v2
       - run: rustup target add wasm32-unknown-unknown
       - name: Install trunk
-        uses: jetli/trunk-action@v0.5.0
+        uses: jetli/trunk-action@v0.5.1
         with:
           version: 'latest'
       - name: Build
