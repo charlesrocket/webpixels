@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 2026-03-11
+
+### Bug Fixes
+
+- Set `ansi` button colors
+- Adjust options font size
+
+### Documentation
+
+- Update READMEs
+
+### Miscellaneous tasks
+
+- Update LICENSE
+- Ignore wasm binaries
+
+### Operations
+
+- Enable dependabot
+- Bump actions/configure-pages from 4 to 5
+- Bump jetli/trunk-action from 0.5.0 to 0.5.1
+- Bump actions/checkout from 4 to 5
+- Bump actions/upload-pages-artifact from 3 to 4
+- Bump actions/checkout from 5 to 6
+
+### Refactor
+
+- Drop redundant crate import
+
+### Build
+
+- Bump `pixelmosh` to 4.2
+- Bump version to 0.5.1
+
 ## [0.5.0] - 2025-03-23
 
 ### Bug Fixes
