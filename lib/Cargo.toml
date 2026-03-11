@@ -1,6 +1,6 @@
 [package]
 name = "webpixels"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["charlesrocket"]
 repository = "https://github.com/charlesrocket/webpixels"
 edition = "2024"
