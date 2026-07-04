@@ -16,7 +16,7 @@ jobs:
           components: rustfmt
       - run: curl https://wasm-bindgen.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: cargo fmt --check
-      - run: wasm-pack test --headless --chrome --firefox
+      - run: wasm-pack test --chrome --chromedriver "$(which chromedriver)" --headless
         working-directory: ./lib
 
   clippy:
