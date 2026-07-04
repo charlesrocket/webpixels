@@ -6,20 +6,6 @@ env:
   RUSTFLAGS: '--cfg getrandom_backend="wasm_js"'
 
 jobs:
-  cargo:
-    name: Test
-    runs-on: codeberg-medium
-    steps:
-      - uses: actions/checkout@v6
-      - run: sudo apt update && sudo apt install -y firefox
-      - uses: https://github.com/dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt
-      - run: curl https://wasm-bindgen.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - run: cargo fmt --check
-      - run: wasm-pack test --firefox --headless
-        working-directory: ./lib
-
   clippy:
     name: Lint
     runs-on: codeberg-medium
@@ -33,7 +19,6 @@ jobs:
       - run: cargo clippy --target wasm32-unknown-unknown --all-features -- -D clippy::all -D warnings
 
   publish:
-    needs: cargo
     name: Publish
     runs-on: codeberg-medium
     if: forgejo.ref_type == 'tag'

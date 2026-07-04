@@ -11,9 +11,21 @@ permissions:
   id-token: write
 
 jobs:
+  cargo:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - run: cargo fmt --check
+      - run: wasm-pack test --headless --chrome --firefox
+        working-directory: ./lib
+
   deploy:
     name: Deploy to GitHub Pages
     if: github.ref == 'refs/heads/master'
+    needs: cargo
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
