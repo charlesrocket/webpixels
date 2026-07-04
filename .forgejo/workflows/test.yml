@@ -11,14 +11,14 @@ jobs:
     runs-on: codeberg-medium
     steps:
       - uses: actions/checkout@v6
-      - run: apt-get update && apt-get install -y chromium-driver
+      - run: apt update && apt install -y firefox
       - run: snap install chromium
       - uses: https://github.com/dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
       - run: curl https://wasm-bindgen.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: cargo fmt --check
-      - run: wasm-pack test --chrome --headless
+      - run: wasm-pack test --firefox --headless
         working-directory: ./lib
 
   clippy:
