@@ -1,8 +1,8 @@
 [package]
 name = "webpixels"
-version = "0.5.1"
+version = "0.5.2"
 authors = ["charlesrocket"]
-repository = "https://github.com/charlesrocket/webpixels"
+repository = "https://codeberg.org/charlesrocket/webpixels"
 edition = "2024"
 categories = ["multimedia::images", "wasm"]
 keywords = ["glitch"]
