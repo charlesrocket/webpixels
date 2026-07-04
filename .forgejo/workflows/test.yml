@@ -11,6 +11,7 @@ jobs:
     runs-on: codeberg-medium
     steps:
       - uses: actions/checkout@v6
+      - uses: https://github.com/dtolnay/rust-toolchain@stable
       - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: cargo fmt --check
       - run: wasm-pack test --headless --chrome --firefox
