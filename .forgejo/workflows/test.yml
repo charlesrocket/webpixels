@@ -11,8 +11,7 @@ jobs:
     runs-on: codeberg-medium
     steps:
       - uses: actions/checkout@v6
-      - run: apt update && apt install -y firefox
-      - run: snap install chromium
+      - run: sudo apt update && sudo apt install -y firefox
       - uses: https://github.com/dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
