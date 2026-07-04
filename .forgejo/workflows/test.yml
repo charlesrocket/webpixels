@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: https://github.com/dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
       - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: cargo fmt --check
       - run: wasm-pack test --headless --chrome --firefox
@@ -24,8 +26,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: https://github.com/dtolnay/rust-toolchain@stable
-      - run: rustup component add clippy
-      - run: rustup target add wasm32-unknown-unknown
+        with:
+          components: clippy
+          targets: wasm32-unknown-unknown
       - run: cargo clippy --target wasm32-unknown-unknown --all-features -- -D clippy::all -D warnings
 
   publish:
@@ -36,7 +39,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: https://github.com/dtolnay/rust-toolchain@stable
-      - run: rustup target add wasm32-unknown-unknown
+        with:
+          targets: wasm32-unknown-unknown
       - run: cargo publish --target wasm32-unknown-unknown -p webpixels --token ${CRATES_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
