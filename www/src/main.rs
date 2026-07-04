@@ -1,4 +1,4 @@
-use gloo_console::log;
+use gloo_console::{error, log};
 use js_sys::{Array, Uint8Array};
 use seed::{attrs, button, div, img, input, prelude::*, style, wasm_bindgen_futures};
 use wasm_bindgen_futures::JsFuture;
@@ -110,7 +110,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             model.core.new_seed();
         }
         Msg::Reload => {
-            log!["ERROR! RESTARTING..."];
+            error!["FAILURE! RESTARTING..."];
             Url::reload();
         }
         Msg::Ansi => {
