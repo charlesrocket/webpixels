@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.2] - 2026-07-04
+
+### Bug Fixes
+
+- Change error message
+
+### Documentation
+
+- Update ci badges
+
+### Operations
+
+- Bump actions/configure-pages from 5 to 6
+- Bump actions/upload-pages-artifact from 4 to 5
+- Bump actions/checkout from 6 to 7
+- Update actions
+- Install rust
+- Use inputs
+- Update `wasm-pack`
+- Switch installer
+- Set `chromedriver` path
+- Install `chromium-driver`
+- Install chromium snap
+- Switch to firefox
+- Fix apt commands
+- Move test job
+
+### Build
+
+- Move repository
+
 ## [0.5.1] - 2026-03-11
 
 ### Bug Fixes
